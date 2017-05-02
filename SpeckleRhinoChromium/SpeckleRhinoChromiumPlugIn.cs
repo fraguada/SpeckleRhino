@@ -1,4 +1,4 @@
-﻿namespace SpeckleRhinoChromium
+﻿namespace SpeckleRhino
 {
   ///<summary>
   /// <para>Every RhinoCommon .rhp assembly must have one and only one PlugIn-derived
