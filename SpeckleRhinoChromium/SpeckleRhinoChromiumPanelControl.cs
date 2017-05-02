@@ -8,7 +8,7 @@ using System.Reflection;
 namespace SpeckleRhino
 {
   [System.Runtime.InteropServices.Guid("B92C6D38-ED33-49EC-AFAA-BDF655A5C359")]
-  public partial class SampleCsChromiumPanelControl : UserControl
+  public partial class SpeckleRhinoPanelControl : UserControl
   {
     private ChromiumWebBrowser m_browser;
 
@@ -19,16 +19,16 @@ namespace SpeckleRhino
     {
       get
       {
-        return typeof(SampleCsChromiumPanelControl).GUID;
+        return typeof(SpeckleRhinoPanelControl).GUID;
       }
     }
 
-    public SampleCsChromiumPanelControl()
+    public SpeckleRhinoPanelControl()
     {
       InitializeComponent();
       InitializeBrowser();
       m_browser.RegisterJsObject("cefCustomObject", new CefCustomObject(m_browser, this));
-      SpeckleRhinoChromiumPlugIn.Instance.UserControl = this;
+      SpeckleRhinoPlugIn.Instance.UserControl = this;
       this.Disposed += new EventHandler(OnDisposed);
     }
 
@@ -68,7 +68,7 @@ namespace SpeckleRhino
     {
       m_browser.Dispose();
       Cef.Shutdown();
-      SpeckleRhinoChromiumPlugIn.Instance.UserControl = null;
+      SpeckleRhinoPlugIn.Instance.UserControl = null;
     }
   }
 }

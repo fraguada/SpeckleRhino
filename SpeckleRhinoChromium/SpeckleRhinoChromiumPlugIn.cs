@@ -8,15 +8,15 @@
   /// attributes in AssemblyInfo.cs (you might need to click "Project" ->
   /// "Show All Files" to see it in the "Solution Explorer" window).</para>
   ///</summary>
-  public class SpeckleRhinoChromiumPlugIn : Rhino.PlugIns.PlugIn
+  public class SpeckleRhinoPlugIn : Rhino.PlugIns.PlugIn
   {
-    public SpeckleRhinoChromiumPlugIn()
+    public SpeckleRhinoPlugIn()
     {
       Instance = this;
     }
 
     ///<summary>Gets the only instance of the SampleCsChromiumPlugIn plug-in.</summary>
-    public static SpeckleRhinoChromiumPlugIn Instance
+    public static SpeckleRhinoPlugIn Instance
     {
       get;
       private set;
@@ -31,7 +31,7 @@
     /// </summary>
     protected override Rhino.PlugIns.LoadReturnCode OnLoad(ref string errorMessage)
     {
-      var panel_type = typeof(SampleCsChromiumPanelControl);
+      var panel_type = typeof(SpeckleRhinoPanelControl);
       Rhino.UI.Panels.RegisterPanel(this, panel_type, "Speckle", Properties.Resources.SpeckleLogo);
       return Rhino.PlugIns.LoadReturnCode.Success;
     }
@@ -39,7 +39,7 @@
     /// <summary>
     /// Gets tabbed dockbar user control
     /// </summary>
-    public SampleCsChromiumPanelControl UserControl
+    public SpeckleRhinoPanelControl UserControl
     {
       get;
       set;

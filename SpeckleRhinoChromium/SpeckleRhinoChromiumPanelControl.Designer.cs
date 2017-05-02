@@ -1,6 +1,6 @@
 ﻿namespace SpeckleRhino
 {
-  partial class SampleCsChromiumPanelControl
+  partial class SpeckleRhinoPanelControl
   {
     /// <summary> 
     /// Required designer variable.
