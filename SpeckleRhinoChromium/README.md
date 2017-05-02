@@ -1,22 +1,20 @@
-SampleCsChromium
-================
-Sample C# RhinoCommon plug-in that demonstrates how to embed Chrome into a docking panel.
+Speckle Rhino Client
+====================
+
+This is the Speckle client for Rhino.
+
+====================
+
+This is based on https://github.com/dalefugier/SampleCsChromium by Dale Fugier
 
 The project uses CefSharp.WinForms from the NuGet repository.
 
 For more information on CefSharp, see the following:
 https://github.com/cefsharp
 
-Building Sample
---------------------
-To build the sample, you are going to need:
-
-* Rhinoceros 5 (http://www.rhino3d.com)
-* Microsoft Visual C# 2010
-
 Legal Stuff
 -----------
-Copyright © 2016 Robert McNeel & Associates. All Rights Reserved.
+Copyright © 2017 Robert McNeel & Associates. All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
