@@ -1,0 +1,27 @@
+{
+  "name": "speckle-rhino-ui",
+  "version": "0.0.1",
+  "description": "SpeckleRhinoUI",
+  "main": "index.html",
+  "author": {
+    "name": "luis.fraguada"
+  },
+  "scripts": {
+    "postinstall": "npm run copy_dev_dependencies",
+    "build": "npm run copy_dist_dependencies && npm run copy_dist_src",
+    "copy_dev_dependencies": "npm run copy_dev_bootstrap && npm run copy_dev_jquery",
+    "copy_dev_bootstrap": "cpx \"node_modules/bootstrap/dist/js/bootstrap.js\" app/js/lib && cpx \"node_modules/bootstrap/dist/css/bootstrap.css\" app/css && cpx \"node_modules/bootstrap/dist/fonts/*.{eot,ttf,svg,woff,woff2}\" app/fonts/",
+    "copy_dev_jquery": "cpx \"node_modules/jquery/dist/jquery.js\" app/js/lib",
+    "copy_dist_src": "cpx \"app/index.html\" \"../SpeckleRhinoChromium/app/\" && cpx \"app/js/app.js\" \"../SpeckleRhinoChromium/app/js/\"",
+    "copy_dist_dependencies": "npm run copy_dist_bootstrap && npm run copy_dist_jquery",
+    "copy_dist_bootstrap": "cpx \"node_modules/bootstrap/dist/js/bootstrap.min.js\" \"../SpeckleRhinoChromium/app/js/lib\" && cpx \"node_modules/bootstrap/dist/css/bootstrap.min.css\" \"../SpeckleRhinoChromium/app/css\" && cpx \"node_modules/bootstrap/dist/fonts/*.{eot,ttf,svg,woff,woff2}\" \"../SpeckleRhinoChromium/app/fonts/\"",
+    "copy_dist_jquery": "cpx \"node_modules/jquery/dist/jquery.min.js\" \"../SpeckleRhinoChromium/app/js/lib\""
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^1.12.4"
+  },
+  "devDependencies": {
+    "cpx": "^1.5.0"
+  }
+}
