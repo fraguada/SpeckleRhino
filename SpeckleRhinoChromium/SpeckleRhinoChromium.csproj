@@ -118,7 +118,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SpeckleRhinoChromiumCommand.cs" />
+    <Compile Include="SpeckleRhinoCommand.cs" />
     <Compile Include="SpeckleRhinoChromiumPanelControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

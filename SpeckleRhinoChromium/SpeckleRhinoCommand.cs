@@ -6,12 +6,12 @@ using Rhino.UI;
 namespace SpeckleRhino
 {
   [System.Runtime.InteropServices.Guid("E7FF484A-3458-47D0-9613-7F98F090204D")]
-  public class SampleCsChromiumCommand : Command
+  public class SpeckleRhinoCommand : Command
   {
     /// <summary>
     /// Constructor
     /// </summary>
-    public SampleCsChromiumCommand()
+    public SpeckleRhinoCommand()
     {
       // Rhino only creates one instance of each command class defined in a
       // plug-in, so it is safe to store a refence in a static property.
@@ -21,7 +21,7 @@ namespace SpeckleRhino
     /// <summary>
     /// Gets the only instance of the this command.
     /// </summary>
-    public static SampleCsChromiumCommand Instance
+    public static SpeckleRhinoCommand Instance
     {
       get;
       private set;
@@ -32,7 +32,7 @@ namespace SpeckleRhino
     /// </summary>
     public override string EnglishName
     {
-      get { return "SampleCsChromium"; }
+      get { return "SpeckleRhino"; }
     }
 
     /// <summary>
@@ -40,12 +40,12 @@ namespace SpeckleRhino
     /// </summary>
     protected override Result RunCommand(RhinoDoc doc, RunMode mode)
     {
-      var panel_id = SampleCsChromiumPanelControl.PanelId;
+      var panel_id = SpeckleRhinoPanelControl.PanelId;
       var visible = Panels.IsPanelVisible(panel_id);
 
       string prompt = (visible)
-        ? "Chromium panel is visible. New value"
-        : "Chromium Manager panel is hidden. New value";
+        ? "SpeckleRhino panel is visible. New value"
+        : "SeckleRhino panel is hidden. New value";
 
       var go = new GetOption();
       go.SetCommandPrompt(prompt);
