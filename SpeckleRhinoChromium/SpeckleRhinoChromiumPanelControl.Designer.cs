@@ -1,4 +1,4 @@
-﻿namespace SpeckleRhinoChromium
+﻿namespace SpeckleRhino
 {
   partial class SampleCsChromiumPanelControl
   {

@@ -10,8 +10,8 @@
     <ProjectGuid>{121C58CE-A403-472F-8B6E-F26DB8D504BC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SampleCsChromium</RootNamespace>
-    <AssemblyName>SampleCsChromium</AssemblyName>
+    <RootNamespace>SpeckleRhino</RootNamespace>
+    <AssemblyName>SpeckleRhino</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -157,7 +157,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\css\bootstrap.min.css">
+    <Content Include="app\css\bootstrap.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="app\fonts\glyphicons-halflings-regular.svg">
@@ -169,10 +169,10 @@
     <Content Include="app\js\app.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="app\js\lib\bootstrap.min.js">
+    <Content Include="app\js\lib\bootstrap.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="app\js\lib\jquery.min.js">
+    <Content Include="app\js\lib\jquery.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\2xlogo-white.ico" />

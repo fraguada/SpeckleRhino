@@ -5,7 +5,7 @@ using CefSharp.WinForms;
 using System.IO;
 using System.Reflection;
 
-namespace SpeckleRhinoChromium
+namespace SpeckleRhino
 {
   [System.Runtime.InteropServices.Guid("B92C6D38-ED33-49EC-AFAA-BDF655A5C359")]
   public partial class SampleCsChromiumPanelControl : UserControl

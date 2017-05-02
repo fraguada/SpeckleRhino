@@ -3,7 +3,7 @@ using Rhino.Commands;
 using Rhino.Input.Custom;
 using Rhino.UI;
 
-namespace SpeckleRhinoChromium
+namespace SpeckleRhino
 {
   [System.Runtime.InteropServices.Guid("E7FF484A-3458-47D0-9613-7F98F090204D")]
   public class SampleCsChromiumCommand : Command
