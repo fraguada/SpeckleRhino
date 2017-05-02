@@ -119,13 +119,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SpeckleRhinoCommand.cs" />
-    <Compile Include="SpeckleRhinoChromiumPanelControl.cs">
+    <Compile Include="SpeckleRhinoPanelControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SpeckleRhinoChromiumPanelControl.Designer.cs">
-      <DependentUpon>SpeckleRhinoChromiumPanelControl.cs</DependentUpon>
+    <Compile Include="SpeckleRhinoPanelControl.Designer.cs">
+      <DependentUpon>SpeckleRhinoPanelControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="SpeckleRhinoChromiumPlugIn.cs" />
+    <Compile Include="SpeckleRhinoPlugIn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -152,8 +152,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SpeckleRhinoChromiumPanelControl.resx">
-      <DependentUpon>SpeckleRhinoChromiumPanelControl.cs</DependentUpon>
+    <EmbeddedResource Include="SpeckleRhinoPanelControl.resx">
+      <DependentUpon>SpeckleRhinoPanelControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -26,6 +26,8 @@
     // loading and shut down, add options pages to the Rhino _Option command
     // and mantain plug-in wide options in a document.
 
+    public override Rhino.PlugIns.PlugInLoadTime LoadTime => Rhino.PlugIns.PlugInLoadTime.AtStartup;
+
     /// <summary>
     /// Called when the plug-in is being loaded.
     /// </summary>

@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace SpeckleRhino
 {
-  [System.Runtime.InteropServices.Guid("B92C6D38-ED33-49EC-AFAA-BDF655A5C359")]
+  [System.Runtime.InteropServices.Guid("041397A5-BB8B-4FCA-B580-1E6A7F0B2137")]
   public partial class SpeckleRhinoPanelControl : UserControl
   {
     private ChromiumWebBrowser m_browser;

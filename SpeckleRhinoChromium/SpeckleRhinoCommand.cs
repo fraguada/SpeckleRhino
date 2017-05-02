@@ -5,7 +5,7 @@ using Rhino.UI;
 
 namespace SpeckleRhino
 {
-  [System.Runtime.InteropServices.Guid("E7FF484A-3458-47D0-9613-7F98F090204D")]
+  [System.Runtime.InteropServices.Guid("2089A618-D9F8-43C0-BEEC-B7A5D9BAFF59")]
   public class SpeckleRhinoCommand : Command
   {
     /// <summary>
