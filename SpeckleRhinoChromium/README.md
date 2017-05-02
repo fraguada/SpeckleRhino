@@ -1,6 +1,10 @@
 Speckle Rhino Client
 ====================
 
+This is the Speckle client for Rhino.
+
+====================
+
 This is based on https://github.com/dalefugier/SampleCsChromium by Dale Fugier
 
 The project uses CefSharp.WinForms from the NuGet repository.
