@@ -2,6 +2,7 @@
 {
   partial class SpeckleRhinoPanelControl
   {
+
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -30,11 +31,11 @@
     {
       this.SuspendLayout();
       // 
-      // SampleCsChromiumPanelControl
+      // SpeckleRhinoPanelControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Name = "SampleCsChromiumPanelControl";
+      this.Name = "SpeckleRhinoPanelControl";
       this.ResumeLayout(false);
     }
 

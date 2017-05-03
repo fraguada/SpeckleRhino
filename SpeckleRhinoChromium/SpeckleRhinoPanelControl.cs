@@ -44,8 +44,26 @@ namespace SpeckleRhino
         MessageBox.Show("Error The html file doesn't exists : " + page);
       }
 
-      Cef.EnableHighDPISupport();
-      Cef.Initialize(new CefSettings());
+      Rhino.RhinoApp.WriteLine("Cef Initialized Pre Control: {0}", Cef.IsInitialized);
+
+      if (!Cef.IsInitialized) {
+
+        var settings = new CefSettings();
+
+        // Increase the log severity so CEF outputs detailed information, useful for debugging
+        settings.LogSeverity = LogSeverity.Verbose;
+        // By default CEF uses an in memory cache, to save cached data e.g. passwords you need to specify a cache path
+        // NOTE: The executing user must have sufficient privileges to write to this folder.
+        settings.CachePath = "cache";
+        settings.RemoteDebuggingPort = 7070;
+        Cef.EnableHighDPISupport();
+
+        Cef.EnableHighDPISupport();
+        Cef.Initialize(settings);
+      }
+
+      Rhino.RhinoApp.WriteLine("Cef Initialized Post Control: {0}", Cef.IsInitialized);
+
       m_browser = new ChromiumWebBrowser(page);
       Controls.Add(m_browser);
       m_browser.Dock = DockStyle.Fill;
@@ -58,6 +76,9 @@ namespace SpeckleRhino
 
       m_browser.Enabled = true;
       m_browser.Show();
+
+     // Rhino.RhinoApp.WriteLine("Browser Address: {0}", m_browser.Address); 
+      
     }
 
     /// <summary>
@@ -70,5 +91,6 @@ namespace SpeckleRhino
       Cef.Shutdown();
       SpeckleRhinoPlugIn.Instance.UserControl = null;
     }
+
   }
 }
