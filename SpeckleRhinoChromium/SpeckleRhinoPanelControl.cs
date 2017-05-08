@@ -56,7 +56,12 @@ namespace SpeckleRhino
         // NOTE: The executing user must have sufficient privileges to write to this folder.
         settings.CachePath = "cache";
         settings.RemoteDebuggingPort = 7070;
-        Cef.EnableHighDPISupport();
+
+        string assemblyLocation = Assembly.GetExecutingAssembly().Location;
+        string assemblyPath = Path.GetDirectoryName(assemblyLocation);
+        string pathSubprocess = Path.Combine(assemblyPath, "CefSharp.BrowserSubprocess.exe");
+
+        settings.BrowserSubprocessPath = pathSubprocess;
 
         Cef.EnableHighDPISupport();
         Cef.Initialize(settings);
@@ -65,7 +70,7 @@ namespace SpeckleRhino
       Rhino.RhinoApp.WriteLine("Cef Initialized Post Control: {0}", Cef.IsInitialized);
 
       m_browser = new ChromiumWebBrowser(page);
-      Controls.Add(m_browser);
+      toolStripContainer.ContentPanel.Controls.Add(m_browser);
       m_browser.Dock = DockStyle.Fill;
 
       // Allow the use of local resources in the browser
