@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace SpeckleRhino
 {
-  [System.Runtime.InteropServices.Guid("B92C6D38-ED33-49EC-AFAA-BDF655A5C359")]
+  [System.Runtime.InteropServices.Guid("041397A5-BB8B-4FCA-B580-1E6A7F0B2137")]
   public partial class SpeckleRhinoPanelControl : UserControl
   {
     private ChromiumWebBrowser m_browser;
@@ -44,10 +44,33 @@ namespace SpeckleRhino
         MessageBox.Show("Error The html file doesn't exists : " + page);
       }
 
-      Cef.EnableHighDPISupport();
-      Cef.Initialize(new CefSettings());
+      Rhino.RhinoApp.WriteLine("Cef Initialized Pre Control: {0}", Cef.IsInitialized);
+
+      if (!Cef.IsInitialized) {
+
+        var settings = new CefSettings();
+
+        // Increase the log severity so CEF outputs detailed information, useful for debugging
+        settings.LogSeverity = LogSeverity.Verbose;
+        // By default CEF uses an in memory cache, to save cached data e.g. passwords you need to specify a cache path
+        // NOTE: The executing user must have sufficient privileges to write to this folder.
+        settings.CachePath = "cache";
+        settings.RemoteDebuggingPort = 7070;
+
+        string assemblyLocation = Assembly.GetExecutingAssembly().Location;
+        string assemblyPath = Path.GetDirectoryName(assemblyLocation);
+        string pathSubprocess = Path.Combine(assemblyPath, "CefSharp.BrowserSubprocess.exe");
+
+        settings.BrowserSubprocessPath = pathSubprocess;
+
+        Cef.EnableHighDPISupport();
+        Cef.Initialize(settings);
+      }
+
+      Rhino.RhinoApp.WriteLine("Cef Initialized Post Control: {0}", Cef.IsInitialized);
+
       m_browser = new ChromiumWebBrowser(page);
-      Controls.Add(m_browser);
+      toolStripContainer.ContentPanel.Controls.Add(m_browser);
       m_browser.Dock = DockStyle.Fill;
 
       // Allow the use of local resources in the browser
@@ -58,6 +81,9 @@ namespace SpeckleRhino
 
       m_browser.Enabled = true;
       m_browser.Show();
+
+     // Rhino.RhinoApp.WriteLine("Browser Address: {0}", m_browser.Address); 
+      
     }
 
     /// <summary>
@@ -70,5 +96,6 @@ namespace SpeckleRhino
       Cef.Shutdown();
       SpeckleRhinoPlugIn.Instance.UserControl = null;
     }
+
   }
 }

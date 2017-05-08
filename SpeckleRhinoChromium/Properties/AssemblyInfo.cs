@@ -36,7 +36,7 @@ using Rhino.PlugIns;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("137E3A1B-E116-4053-9244-45EAA1DCA439")]// This will also be the Guid of the Rhino plug-in
+[assembly: Guid("7F243444-528A-4449-A0E1-83B2E65A3C73")]// This will also be the Guid of the Rhino plug-in
 
 // Version information for an assembly consists of the following four values:
 //

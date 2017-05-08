@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\CefSharp.WinForms.47.0.3\build\CefSharp.WinForms.props" Condition="Exists('..\packages\CefSharp.WinForms.47.0.3\build\CefSharp.WinForms.props')" />
+  <Import Project="..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.props')" />
   <Import Project="packages\CefSharp.WinForms.47.0.3\build\CefSharp.WinForms.props" Condition="Exists('packages\CefSharp.WinForms.47.0.3\build\CefSharp.WinForms.props')" />
   <Import Project="packages\CefSharp.Common.47.0.3\build\CefSharp.Common.props" Condition="Exists('packages\CefSharp.Common.47.0.3\build\CefSharp.Common.props')" />
   <PropertyGroup>
@@ -64,18 +66,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp, Version=47.0.3.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\CefSharp.Common.47.0.3\CefSharp\x64\CefSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="CefSharp.Core, Version=47.0.3.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\CefSharp.Common.47.0.3\CefSharp\x64\CefSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="CefSharp.WinForms, Version=47.0.3.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\CefSharp.WinForms.47.0.3\CefSharp\x64\CefSharp.WinForms.dll</HintPath>
-    </Reference>
     <Reference Include="GH_IO, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6a29997d2e6b4f97, processorArchitecture=MSIL">
       <HintPath>..\packages\Grasshopper.0.9.76\lib\net35\GH_IO.dll</HintPath>
     </Reference>
@@ -119,13 +109,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SpeckleRhinoCommand.cs" />
-    <Compile Include="SpeckleRhinoChromiumPanelControl.cs">
+    <Compile Include="SpeckleRhinoPanelControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SpeckleRhinoChromiumPanelControl.Designer.cs">
-      <DependentUpon>SpeckleRhinoChromiumPanelControl.cs</DependentUpon>
+    <Compile Include="SpeckleRhinoPanelControl.Designer.cs">
+      <DependentUpon>SpeckleRhinoPanelControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="SpeckleRhinoChromiumPlugIn.cs" />
+    <Compile Include="SpeckleRhinoPlugIn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -152,8 +142,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SpeckleRhinoChromiumPanelControl.resx">
-      <DependentUpon>SpeckleRhinoChromiumPanelControl.cs</DependentUpon>
+    <EmbeddedResource Include="SpeckleRhinoPanelControl.resx">
+      <DependentUpon>SpeckleRhinoPanelControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -205,9 +195,17 @@ Erase "$(TargetPath)"</PostBuildEvent>
     <Error Condition="!Exists('packages\CefSharp.WinForms.47.0.3\build\CefSharp.WinForms.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\CefSharp.WinForms.47.0.3\build\CefSharp.WinForms.props'))" />
     <Error Condition="!Exists('packages\RhinoCommon.5.12.50810.13095\build\net35\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\RhinoCommon.5.12.50810.13095\build\net35\RhinoCommon.targets'))" />
     <Error Condition="!Exists('..\packages\Grasshopper.0.9.76\build\net35\Grasshopper.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grasshopper.0.9.76\build\net35\Grasshopper.targets'))" />
+    <Error Condition="!Exists('..\packages\cef.redist.x64.3.2526.1362\build\cef.redist.x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.3.2526.1362\build\cef.redist.x64.targets'))" />
+    <Error Condition="!Exists('..\packages\cef.redist.x86.3.2526.1362\build\cef.redist.x86.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x86.3.2526.1362\build\cef.redist.x86.targets'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.props'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.targets'))" />
+    <Error Condition="!Exists('..\packages\CefSharp.WinForms.47.0.3\build\CefSharp.WinForms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.WinForms.47.0.3\build\CefSharp.WinForms.props'))" />
   </Target>
   <Import Project="packages\cef.redist.x64.3.2526.1362\build\cef.redist.x64.targets" Condition="Exists('packages\cef.redist.x64.3.2526.1362\build\cef.redist.x64.targets')" />
   <Import Project="packages\CefSharp.Common.47.0.3\build\CefSharp.Common.targets" Condition="Exists('packages\CefSharp.Common.47.0.3\build\CefSharp.Common.targets')" />
   <Import Project="packages\RhinoCommon.5.12.50810.13095\build\net35\RhinoCommon.targets" Condition="Exists('packages\RhinoCommon.5.12.50810.13095\build\net35\RhinoCommon.targets')" />
   <Import Project="..\packages\Grasshopper.0.9.76\build\net35\Grasshopper.targets" Condition="Exists('..\packages\Grasshopper.0.9.76\build\net35\Grasshopper.targets')" />
+  <Import Project="..\packages\cef.redist.x64.3.2526.1362\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2526.1362\build\cef.redist.x64.targets')" />
+  <Import Project="..\packages\cef.redist.x86.3.2526.1362\build\cef.redist.x86.targets" Condition="Exists('..\packages\cef.redist.x86.3.2526.1362\build\cef.redist.x86.targets')" />
+  <Import Project="..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.47.0.3\build\CefSharp.Common.targets')" />
 </Project>
