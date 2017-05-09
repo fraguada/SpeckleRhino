@@ -32,7 +32,7 @@ namespace SpeckleRhino
     /// </summary>
     public override string EnglishName
     {
-      get { return "SpeckleRhino"; }
+      get { return "SpeckleRhinoPanelCommand"; }
     }
 
     /// <summary>

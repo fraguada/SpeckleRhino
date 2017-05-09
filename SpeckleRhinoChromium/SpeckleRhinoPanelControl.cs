@@ -27,26 +27,61 @@ namespace SpeckleRhino
     {
       InitializeComponent();
       InitializeBrowser();
+
       m_browser.RegisterJsObject("cefCustomObject", new CefCustomObject(m_browser, this));
+
       SpeckleRhinoPlugIn.Instance.UserControl = this;
+
+      m_browser.LoadingStateChanged += OnLoadingStateChanged;
+      m_browser.ConsoleMessage += OnBrowserConsoleMessage;
+      m_browser.StatusMessage += OnBrowserStatusMessage;
+      m_browser.TitleChanged += OnBrowserTitleChanged;
+      m_browser.AddressChanged += OnBrowserAddressChanged;
       this.Disposed += new EventHandler(OnDisposed);
+    }
+
+    private void OnBrowserAddressChanged(object sender, AddressChangedEventArgs e)
+    {
+#if DEBUG
+      Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Browser Address Changed. \nBrowser: {0}, Address: {1}", e.Browser, e.Address);
+#endif
+    }
+
+    private void OnBrowserTitleChanged(object sender, TitleChangedEventArgs e)
+    {
+#if DEBUG
+      Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Browser Title Changed. \nTitle: {0}", e.Title);
+#endif
+    }
+
+    private void OnBrowserStatusMessage(object sender, StatusMessageEventArgs e)
+    {
+#if DEBUG
+      Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Browser Status Message Changed. \nBrowser: {0}, Value: {1}", e.Browser, e.Value);
+#endif
+    }
+
+    private void OnBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
+    {
+#if DEBUG
+      Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Browser Console Message Changed. \nLine: {0}, Message: {1}, Source: {2}", e.Line, e.Message, e.Source);
+#endif
+    }
+
+    private void OnLoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+    {
+#if DEBUG
+      Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Loading State Changed. \nBrowser: {0}, Is Loading: {1}", e.Browser, e.IsLoading);
+      if (!e.IsLoading)
+        Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Should probably connect to Speckle.");
+#endif
     }
 
     private void InitializeBrowser()
     {
 
-      var path = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
-
-      String page = string.Format(@"{0}\app\index.html", path);
-
-      if (!File.Exists(page))
+      if (!Cef.IsInitialized)
       {
-        MessageBox.Show("Error The html file doesn't exists : " + page);
-      }
-
-      Rhino.RhinoApp.WriteLine("Cef Initialized Pre Control: {0}", Cef.IsInitialized);
-
-      if (!Cef.IsInitialized) {
 
         var settings = new CefSettings();
 
@@ -65,9 +100,19 @@ namespace SpeckleRhino
 
         Cef.EnableHighDPISupport();
         Cef.Initialize(settings);
+
+      }
+      else
+      {
+        Rhino.RhinoApp.WriteLine("Speckle for Rhino: Warning.  CefSharp has already been initialized by another plugin.  This may cause issues.");
       }
 
-      Rhino.RhinoApp.WriteLine("Cef Initialized Post Control: {0}", Cef.IsInitialized);
+      var path = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
+
+      string page = string.Format(@"{0}\app\index.html", path);
+
+      if (!File.Exists(page))
+        Rhino.RhinoApp.WriteLine("Speckle for Rhino: Error. The html file doesn't exists : {0}", page);
 
       m_browser = new ChromiumWebBrowser(page);
       toolStripContainer.ContentPanel.Controls.Add(m_browser);
@@ -81,8 +126,6 @@ namespace SpeckleRhino
 
       m_browser.Enabled = true;
       m_browser.Show();
-
-     // Rhino.RhinoApp.WriteLine("Browser Address: {0}", m_browser.Address); 
       
     }
 
@@ -96,6 +139,5 @@ namespace SpeckleRhino
       Cef.Shutdown();
       SpeckleRhinoPlugIn.Instance.UserControl = null;
     }
-
   }
 }

@@ -35,42 +35,11 @@ namespace SpeckleRhino
     /// </summary>
     protected override Rhino.PlugIns.LoadReturnCode OnLoad(ref string errorMessage)
     {
-
-      // InitCEF();
-      Rhino.RhinoApp.WriteLine("Cef Initialized: {0}", Cef.IsInitialized);
-
       var panel_type = typeof(SpeckleRhinoPanelControl);
       Rhino.UI.Panels.RegisterPanel(this, panel_type, "Speckle for Rhino", Properties.Resources.SpeckleLogo);
-
-      Rhino.RhinoApp.WriteLine("Cef Initialized Post: {0}", Cef.IsInitialized);
-
-      Rhino.RhinoApp.WriteLine("Controls: ");
-
       return Rhino.PlugIns.LoadReturnCode.Success;
     }
-
-    public static void InitCEF()
-    {
-
-      if(Cef.IsInitialized)
-        Cef.Shutdown();
-
-      var settings = new CefSettings();
-
-      // Increase the log severity so CEF outputs detailed information, useful for debugging
-      settings.LogSeverity = LogSeverity.Verbose;
-      // By default CEF uses an in memory cache, to save cached data e.g. passwords you need to specify a cache path
-      // NOTE: The executing user must have sufficient privileges to write to this folder.
-      settings.CachePath = "cache";
-      settings.RemoteDebuggingPort = 7070;
-      Cef.EnableHighDPISupport();
-
-      if (!Cef.IsInitialized)
-        Cef.Initialize(settings, true, true);
-
-      Rhino.RhinoApp.WriteLine("Cef Initialized: {0}", Cef.IsInitialized);
-    }
-
+   
     /// <summary>
     /// Gets tabbed dockbar user control
     /// </summary>

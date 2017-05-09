@@ -55,7 +55,7 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.toolStripContainer);
-      this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+      this.Margin = new System.Windows.Forms.Padding(6);
       this.Name = "SpeckleRhinoPanelControl";
       this.Size = new System.Drawing.Size(300, 288);
       this.toolStripContainer.ResumeLayout(false);
