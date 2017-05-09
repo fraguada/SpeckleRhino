@@ -1,16 +1,13 @@
 Speckle Rhino Client
 ====================
 
-This is the Speckle client for Rhino.
-
-====================
-
 Development Notes:
-
+====================
 - The first time you clone the project, you should Restore NuGet pakages
 - Ensure that the Active Configuration is Debug | x64
 - The first time you run a debug session, you'll need to install the .rhp from `SpeckleRhino\SpeckleRhinoChromium\bin\x64\Debug`
 
+Credits / Dependencies
 ====================
 
 This is based on https://github.com/dalefugier/SampleCsChromium by Dale Fugier
