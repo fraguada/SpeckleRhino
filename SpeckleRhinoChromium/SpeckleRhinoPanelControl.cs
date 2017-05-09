@@ -124,8 +124,8 @@ namespace SpeckleRhino
       browserSettings.UniversalAccessFromFileUrls = CefState.Enabled;
       m_browser.BrowserSettings = browserSettings;
 
-      m_browser.Enabled = true;
-      m_browser.Show();
+      //m_browser.Enabled = true;
+      //m_browser.Show();
       
     }
 
