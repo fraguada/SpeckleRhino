@@ -10,12 +10,11 @@ Development Notes:
 Credits / Dependencies
 -----------
 
-This is based on https://github.com/dalefugier/SampleCsChromium by Dale Fugier
+This project extends Dimitrie Stefanescu's Speckle project: https://speckle.works/
 
-The project uses CefSharp.WinForms from the NuGet repository.
+The code for this project based on https://github.com/dalefugier/SampleCsChromium by Dale Fugier
 
-For more information on CefSharp, see the following:
-https://github.com/cefsharp
+The project uses CefSharp.WinForms from the NuGet repository.  For more information on CefSharp, see the following: https://github.com/cefsharp
 
 Legal Stuff
 -----------
