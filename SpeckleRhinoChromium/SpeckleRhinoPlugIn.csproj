@@ -180,6 +180,18 @@ Erase "$(TargetPath)"</PostBuildEvent>
   <PropertyGroup>
     <FallbackCulture>en-US</FallbackCulture>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <StartProgram>c:\Program Files\Rhinoceros 5 (64-bit)\System\Rhino.exe</StartProgram>
+    <StartArguments>
+    </StartArguments>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <StartArguments>
+    </StartArguments>
+    <StartAction>Program</StartAction>
+    <StartProgram>c:\Program Files (x86)\Rhinoceros 5\System\Rhino4.exe</StartProgram>
+  </PropertyGroup>
   <Import Project="$(SolutionDir)\packages\RhinoCommon.5.12.50810.13095\build\net35\RhinoCommon.targets" Condition="Exists('$(SolutionDir)\packages\RhinoCommon.5.12.50810.13095\build\net35\RhinoCommon.targets')" />
   <Import Project="..\packages\cef.redist.x64.3.2526.1362\build\cef.redist.x64.targets" Condition="Exists('..\packages\cef.redist.x64.3.2526.1362\build\cef.redist.x64.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
