@@ -8,9 +8,7 @@ This is the Speckle client for Rhino.
 Development Notes:
 
 - The first time you clone the project, you should Restore NuGet pakages
-- Ensure that RhinoCommon, GH_IO, and Grasshopper references are set to `Copy Local = False` (this should be the case by default).  
 - Ensure that the Active Configuration is Debug | x64
-- Ensure that the project is set to start external application in Properties > Debug.  It should be set to start `C:\Program Files\Rhinoceros 5 (64-bit)\System\Rhino.exe`
 - The first time you run a debug session, you'll need to install the .rhp from `SpeckleRhino\SpeckleRhinoChromium\bin\x64\Debug`
 
 ====================
