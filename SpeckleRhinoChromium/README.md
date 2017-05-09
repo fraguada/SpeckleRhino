@@ -1,15 +1,16 @@
-Speckle Rhino Client
+Speckle Rhino Chromium
 ====================
 
 Development Notes:
 -----------
+- This project is developed in Visual Studio 2017
+- You will need Rhino 5 x64 sr12 for Windows to test (not to develop)
 - The first time you clone the project, you should Restore NuGet pakages
 - Ensure that the Active Configuration is Debug | x64
 - The first time you run a debug session, you'll need to install the .rhp from `SpeckleRhino\SpeckleRhinoChromium\bin\x64\Debug`
 
 Credits / Dependencies
 -----------
-
 This project extends Dimitrie Stefanescu's Speckle project: https://speckle.works/
 
 The code for this project based on https://github.com/dalefugier/SampleCsChromium by Dale Fugier
