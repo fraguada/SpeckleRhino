@@ -15,7 +15,8 @@
     "copy_dist_src": "cpx \"app/index.html\" \"../SpeckleRhinoChromium/app/\" && cpx \"app/js/app.js\" \"../SpeckleRhinoChromium/app/js/\"",
     "copy_dist_dependencies": "npm run copy_dist_bootstrap && npm run copy_dist_jquery",
     "copy_dist_bootstrap": "cpx \"node_modules/bootstrap/dist/js/bootstrap.js\" \"../SpeckleRhinoChromium/app/js/lib\" && cpx \"node_modules/bootstrap/dist/css/bootstrap.css\" \"../SpeckleRhinoChromium/app/css\" && cpx \"node_modules/bootstrap/dist/fonts/*.{eot,ttf,svg,woff,woff2}\" \"../SpeckleRhinoChromium/app/fonts/\"",
-    "copy_dist_jquery": "cpx \"node_modules/jquery/dist/jquery.js\" \"../SpeckleRhinoChromium/app/js/lib\""
+    "copy_dist_jquery": "cpx \"node_modules/jquery/dist/jquery.js\" \"../SpeckleRhinoChromium/app/js/lib\"",
+    "watch": "browser-sync start --server --startPath /app/index.html --files \"*.html, css/*.css\""
   },
   "dependencies": {
     "bootstrap": "^3.3.7",

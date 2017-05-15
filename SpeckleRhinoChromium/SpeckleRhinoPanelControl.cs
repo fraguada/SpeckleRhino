@@ -115,6 +115,7 @@ namespace SpeckleRhino
         Rhino.RhinoApp.WriteLine("Speckle for Rhino: Error. The html file doesn't exists : {0}", page);
 
       m_browser = new ChromiumWebBrowser(page);
+      //m_browser = new ChromiumWebBrowser("https://app.speckle.works/receiver/example/");
       toolStripContainer.ContentPanel.Controls.Add(m_browser);
       m_browser.Dock = DockStyle.Fill;
 
