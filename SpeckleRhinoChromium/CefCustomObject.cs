@@ -82,11 +82,22 @@ namespace SpeckleRhino
             {
                 string type = (string)obj.type;
 
-                if (type == "Mesh")
-                    ot.AddMesh(c.encodeObject(obj));
+                switch (type)
+                {
+                    case "Mesh":
+                            ot.AddMesh(c.encodeObject(obj));
+                            break;
 
-                if (type == "Polyline")
-                    ot.AddPolyline(c.encodeObject(obj));
+                    case "Polyline":
+                            ot.AddPolyline(c.encodeObject(obj));
+                            break;
+
+                    default:
+                        RhinoApp.WriteLine("{0}",obj);
+                        break;
+                }
+        
+
             }
 
             Rhino.RhinoDoc.ActiveDoc.Views.Redraw();
