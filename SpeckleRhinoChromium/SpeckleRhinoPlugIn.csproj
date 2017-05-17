@@ -78,10 +78,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="SpeckleCommon, Version=0.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Speckle.SpeckleCommon.0.0.1-rc5\lib\net45\SpeckleCommon.dll</HintPath>
+      <HintPath>..\packages\Speckle.SpeckleCommon.0.0.1-rc6\lib\net45\SpeckleCommon.dll</HintPath>
     </Reference>
     <Reference Include="SpeckleGhRhConverter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Speckle.RhinoConverter.0.0.1-rc1\lib\net45\SpeckleGhRhConverter.dll</HintPath>
+      <HintPath>..\packages\Speckle.RhinoConverter.0.0.1-rc2\lib\net45\SpeckleGhRhConverter.dll</HintPath>
     </Reference>
     <Reference Include="SpecklePopup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Speckle.AccountManagerPopup.0.0.1-rc1\lib\net45\SpecklePopup.dll</HintPath>
