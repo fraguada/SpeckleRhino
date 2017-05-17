@@ -89,6 +89,8 @@ namespace SpeckleRhino
                     ot.AddPolyline(c.encodeObject(obj));
             }
 
+            Rhino.RhinoDoc.ActiveDoc.Views.Redraw();
+
         }
     }
 
