@@ -1,28 +1,29 @@
 {
-  "name": "speckle-rhino-ui",
-  "version": "0.0.1",
-  "description": "SpeckleRhinoUI",
-  "main": "index.html",
-  "author": {
-    "name": "luis.fraguada"
-  },
+  "name": "simple",
+  "description": "A Vue.js project",
+  "version": "1.0.0",
+  "author": "didimitrie <didimitrie@gmail.com>",
+  "private": true,
   "scripts": {
-    "postinstall": "npm run copy_dev_dependencies",
-    "build": "npm run copy_dist_dependencies && npm run copy_dist_src",
-    "copy_dev_dependencies": "npm run copy_dev_bootstrap && npm run copy_dev_jquery",
-    "copy_dev_bootstrap": "cpx \"node_modules/bootstrap/dist/js/bootstrap.js\" app/js/lib && cpx \"node_modules/bootstrap/dist/css/bootstrap.css\" app/css && cpx \"node_modules/bootstrap/dist/fonts/*.{eot,ttf,svg,woff,woff2}\" app/fonts/",
-    "copy_dev_jquery": "cpx \"node_modules/jquery/dist/jquery.js\" app/js/lib",
-    "copy_dist_src": "cpx \"app/index.html\" \"../SpeckleRhinoChromium/app/\" && cpx \"app/js/app.js\" \"../SpeckleRhinoChromium/app/js/\"",
-    "copy_dist_dependencies": "npm run copy_dist_bootstrap && npm run copy_dist_jquery",
-    "copy_dist_bootstrap": "cpx \"node_modules/bootstrap/dist/js/bootstrap.js\" \"../SpeckleRhinoChromium/app/js/lib\" && cpx \"node_modules/bootstrap/dist/css/bootstrap.css\" \"../SpeckleRhinoChromium/app/css\" && cpx \"node_modules/bootstrap/dist/fonts/*.{eot,ttf,svg,woff,woff2}\" \"../SpeckleRhinoChromium/app/fonts/\"",
-    "copy_dist_jquery": "cpx \"node_modules/jquery/dist/jquery.js\" \"../SpeckleRhinoChromium/app/js/lib\"",
-    "watch": "browser-sync start --server --startPath /app/index.html --files \"*.html, css/*.css\""
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "bootstrap": "^3.3.7",
-    "jquery": "^1.12.4"
+    "specklebrowser": "0.0.2",
+    "vue": "^2.2.1",
+    "vue-material": "^0.7.1",
+    "vuex": "^2.3.1"
   },
   "devDependencies": {
-    "cpx": "^1.5.0"
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-preset-latest": "^6.0.0",
+    "cross-env": "^3.0.0",
+    "css-loader": "^0.25.0",
+    "file-loader": "^0.9.0",
+    "vue-loader": "^11.1.4",
+    "vue-template-compiler": "^2.2.1",
+    "webpack": "^2.2.0",
+    "webpack-dev-server": "^2.2.0"
   }
 }

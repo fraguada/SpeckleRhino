@@ -106,6 +106,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SpeckleRhinoCommand.cs" />
+    <Compile Include="SpeckleRhinoDisplayConduit.cs" />
     <Compile Include="SpeckleRhinoModel.cs" />
     <Compile Include="SpeckleRhinoPanelControl.cs">
       <SubType>UserControl</SubType>

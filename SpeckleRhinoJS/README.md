@@ -1,19 +1,18 @@
-﻿Speckle Rhino UI
-====================
+# simple
 
-This is a .njsproj for developing the UI for SpeckleRhinoChromium.  
+> A Vue.js project
 
-Development Notes:
------------
-- This project is developed in Visual Studio 2017
-- The SpeckleRhinoUI project depends on Node.js Tools for Visual Studio
-- There are many tasks missing that would make this project useful.  For now, best to stay away.
+## Build Setup
 
-Credits / Dependencies
------------
-This project extends Dimitrie Stefanescu's Speckle project: https://speckle.works/
+``` bash
+# install dependencies
+npm install
 
-- jQuery
-- Bootstrap
+# serve with hot reload at localhost:8080
+npm run dev
 
+# build for production with minification
+npm run build
+```
 
+For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
