@@ -55,7 +55,8 @@ export default {
 
       this.mySpkReceiver.getObjects( ( objs ) => {
         console.log('Got all objects from server.')
-        if( typeof cefCustomObject != 'undefined' )
+        if( typeof cefCustomObject != 'undefined' ) // this is a quick hack for in browser quick `n dirty checks
+          cefCustomObject.liveUpdate(  )
           cefCustomObject.addObjects( JSON.stringify(objs) )
       })
     },

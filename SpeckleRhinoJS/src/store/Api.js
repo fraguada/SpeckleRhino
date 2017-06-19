@@ -15,18 +15,13 @@ const _accounts = [ {
 } ]
 
 const _receivers = [] 
-// const _receivers = [ {
-//   serverUrl: 'https://server.speckle.works/',
-//   streamId: 'ByLzkIOxZ',
-//   token: 'faa6ba741e854d6e8fe6ae66218ac736'
-// } ]
 
 
 export default {
   getAccounts( cb ) {
     return typeof cefCustomObject != 'undefined' ? cb( JSON.parse( cefCustomObject.getAccounts() ) ) : cb( _accounts )
   },
-  addAccount( account, cb) {
+  addAccount( account, cb ) {
     // todo
   },
   getReceivers( cb ) {
