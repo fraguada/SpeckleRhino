@@ -44,9 +44,10 @@ export default {
   },
   methods: {
     receiverError( err ) {
-      this.errror = err
+      this.error = err
     },
-    liveUpdate( name, layers, objects, history ) {
+    //.name, .layers, .objects, .objectProperties (from receiver)
+    liveUpdate( name, layers, objects, objectProperties ) {
       this.showProgressBar = false
       this.objLoadProgress = 0
       this.name = name
@@ -56,9 +57,9 @@ export default {
 
       this.mySpkReceiver.getObjects( ( objs ) => {
         console.log('Got all objects from server.')
-        if( typeof cefCustomObject != 'undefined' ) // this is a quick hack for in browser quick `n dirty checks
-          cefCustomObject.liveUpdate(  )
-          cefCustomObject.addObjects( JSON.stringify(objs) )
+        if( typeof cefCustomObject != 'undefined' ) 
+          cefCustomObject.liveUpdate( this.spkreceiver.streamId, JSON.stringify( objs ), JSON.stringify(objectProperties ) )
+          // cefCustomObject.addObjects( JSON.stringify(objs) )
       })
     },
     metadataUpdate( name, layers ) {
