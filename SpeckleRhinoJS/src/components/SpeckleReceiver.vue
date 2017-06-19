@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import ReceiverClient from 'specklebrowser'
+import ReceiverClient             from '../receiver/SpeckleReceiver' // temporary solution to fix uglify error on build.
+
 
 export default {
   name: 'SpeckleReceiver',

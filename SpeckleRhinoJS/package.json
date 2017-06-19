@@ -9,7 +9,8 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "specklebrowser": "0.0.2",
+    "axios": "^0.16.2",
+    "event-emitter-es6": "^1.1.5",
     "vue": "^2.2.1",
     "vue-material": "^0.7.1",
     "vuex": "^2.3.1"
