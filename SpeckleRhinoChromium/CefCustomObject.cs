@@ -70,6 +70,11 @@ namespace SpeckleRhino
             Process.Start(start);
         }
 
+        public void liveUpdate(string streamId, string serialisedObjectList, string serialisedPropertiesList)
+        {
+            Debug.WriteLine(streamId);
+        }
+
         public void addObjects(string serialisedObjectList)
         {
             Rhino.DocObjects.Tables.ObjectTable ot = Rhino.RhinoDoc.ActiveDoc.Objects;

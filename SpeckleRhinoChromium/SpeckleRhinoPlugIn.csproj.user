@@ -4,4 +4,20 @@
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Rhinoceros 5 %2864-bit%29\System\Rhino.exe</StartProgram>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Dimitrie|x64'">
+    <StartProgram>C:\Program Files\Rhinoceros 5 %2864-bit%29\System\Rhino.exe</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Dimitrie|x86'">
+    <StartProgram>c:\Program Files %28x86%29\Rhinoceros 5\System\Rhino4.exe</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Luis|x64'">
+    <StartProgram>C:\Program Files\Rhinoceros 5 %2864-bit%29\System\Rhino.exe</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Luis|x86'">
+    <StartProgram>c:\Program Files %28x86%29\Rhinoceros 5\System\Rhino4.exe</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
 </Project>
