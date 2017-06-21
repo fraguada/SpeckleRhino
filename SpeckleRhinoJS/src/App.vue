@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <md-toolbar class="md-transparent md-dense" style="margin-bottom:100px;">
+    <md-toolbar class="md-transparent md-dense" style="margin-bottom:60px;">
       <span style="flex: 1"></span>
       <md-button class="md-icon-button md-right" @click.native="$refs.sidenav.toggle()">
         <md-icon>person</md-icon>
@@ -13,7 +13,7 @@
         <account-list></account-list>
     </md-sidenav>
 
-    <md-speed-dial md-open="click" md-direction="bottom" class="md-fab-top-left " md-theme="default" v-if='currentView === "default"'>
+    <md-speed-dial md-open="click" md-direction="right" class="md-fab-top-left " md-theme="default" v-if='currentView === "default"'>
       <md-button class="md-fab md-primary" md-fab-trigger>
         <md-icon md-icon-morph>close</md-icon>
         <md-icon>add</md-icon>
