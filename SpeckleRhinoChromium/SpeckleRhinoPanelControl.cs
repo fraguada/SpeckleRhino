@@ -4,6 +4,7 @@ using CefSharp;
 using CefSharp.WinForms;
 using System.IO;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace SpeckleRhino
 {
@@ -11,6 +12,7 @@ namespace SpeckleRhino
     public partial class SpeckleRhinoPanelControl : UserControl
     {
         private ChromiumWebBrowser m_browser;
+        private SpeckleRhinoViewModel m_viewModel;
 
         /// <summary>
         /// Returns the ID of this panel.
@@ -28,7 +30,10 @@ namespace SpeckleRhino
             InitializeComponent();
             InitializeBrowser();
 
-            m_browser.RegisterJsObject("cefCustomObject", new CefCustomObject(m_browser, this));
+            m_viewModel = new SpeckleRhinoViewModel();
+            SpeckleRhinoPlugIn.Instance.ViewModel = m_viewModel;
+
+            m_browser.RegisterJsObject("cefCustomObject", new CefCustomObject(m_browser, this, m_viewModel));
 
             SpeckleRhinoPlugIn.Instance.UserControl = this;
 
@@ -38,42 +43,45 @@ namespace SpeckleRhino
             m_browser.TitleChanged += OnBrowserTitleChanged;
             m_browser.AddressChanged += OnBrowserAddressChanged;
             this.Disposed += new EventHandler(OnDisposed);
+
+
+ 
         }
 
         private void OnBrowserAddressChanged(object sender, AddressChangedEventArgs e)
         {
 #if DEBUG
-            Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Browser Address Changed. \nBrowser: {0}, Address: {1}", e.Browser, e.Address);
+            Debug.WriteLine("\nSpeckle for Rhino: Browser Address Changed. \nBrowser: {0}, Address: {1}", e.Browser, e.Address);
 #endif
         }
 
         private void OnBrowserTitleChanged(object sender, TitleChangedEventArgs e)
         {
 #if DEBUG
-            Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Browser Title Changed. \nTitle: {0}", e.Title);
+            Debug.WriteLine("\nSpeckle for Rhino: Browser Title Changed. \nTitle: {0}", e.Title);
 #endif
         }
 
         private void OnBrowserStatusMessage(object sender, StatusMessageEventArgs e)
         {
 #if DEBUG
-            Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Browser Status Message Changed. \nBrowser: {0}, Value: {1}", e.Browser, e.Value);
+            Debug.WriteLine("\nSpeckle for Rhino: Browser Status Message Changed. \nBrowser: {0}, Value: {1}", e.Browser, e.Value);
 #endif
         }
 
         private void OnBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
         {
 #if DEBUG
-            Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Browser Console Message Changed. \nLine: {0}, Message: {1}, Source: {2}", e.Line, e.Message, e.Source);
+            Debug.WriteLine("\nSpeckle for Rhino: Browser Console Message Changed. \nLine: {0}, Message: {1}, Source: {2}", e.Line, e.Message, e.Source);
 #endif
         }
 
         private void OnLoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
         {
 #if DEBUG
-            Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Loading State Changed. \nBrowser: {0}, Is Loading: {1}", e.Browser, e.IsLoading);
+            Debug.WriteLine("\nSpeckle for Rhino: Loading State Changed. \nBrowser: {0}, Is Loading: {1}", e.Browser, e.IsLoading);
             if (!e.IsLoading)
-                Rhino.RhinoApp.WriteLine("\nSpeckle for Rhino: Should probably connect to Speckle.");
+                Debug.WriteLine("\nSpeckle for Rhino: Should probably connect to Speckle.");
 #endif
         }
 
