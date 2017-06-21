@@ -3,25 +3,27 @@ using System.ComponentModel;
 
 namespace SpeckleRhino
 {
-  public class SpeckleRhinoViewModel : INotifyPropertyChanged
-  {
-
-    #region ctor
-    public SpeckleRhinoViewModel()
+    public class SpeckleRhinoViewModel : INotifyPropertyChanged
     {
-      SpeckleRhinoModel model = new SpeckleRhinoModel();
-      model.PropertyChanged += new PropertyChangedEventHandler(model_PropertyChanged);
+
+        public SpeckleRhinoModel Model { get; private set; }
+
+        #region ctor
+        public SpeckleRhinoViewModel()
+        {
+            Model = new SpeckleRhinoModel();
+            Model.PropertyChanged += new PropertyChangedEventHandler(model_PropertyChanged);
+        }
+        #endregion
+
+        #region Events / Handlers
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+
     }
-    #endregion
-
-    #region Events / Handlers
-    public event PropertyChangedEventHandler PropertyChanged;
-    private void model_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      throw new NotImplementedException();
-    }
-    #endregion
-
-
-  }
 }

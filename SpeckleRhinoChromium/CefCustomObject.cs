@@ -20,14 +20,15 @@ namespace SpeckleRhino
         private static ChromiumWebBrowser _instanceBrowser = null;
         // The form class needs to be changed according to yours
         private static SpeckleRhinoPanelControl _instanceMainForm = null;
+        private static SpeckleRhinoViewModel _viewModel = null;
 
         public List<SpeckleAccount> accounts = new List<SpeckleAccount>();
 
-
-        public CefCustomObject(ChromiumWebBrowser originalBrowser, SpeckleRhinoPanelControl mainForm)
+        public CefCustomObject(ChromiumWebBrowser originalBrowser, SpeckleRhinoPanelControl mainForm, SpeckleRhinoViewModel viewModel)
         {
             _instanceBrowser = originalBrowser;
             _instanceMainForm = mainForm;
+            _viewModel = viewModel;
 
             string strPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData);
             strPath = strPath + @"\SpeckleSettings";
@@ -73,6 +74,21 @@ namespace SpeckleRhino
         public void liveUpdate(string streamId, string serialisedObjectList, string serialisedPropertiesList)
         {
             Debug.WriteLine(streamId);
+            //here I need to pass this info to a stream dictionary.
+            //this should be of type <string streamId, object>
+            //if containsKey streamId, update object
+            //if not, add key value
+
+            //Should raise view model property changed event handler
+
+            if(_viewModel.Model.Receivers.Any(R => R.Id == streamId))
+            {
+                _viewModel.Model.Receivers.First(R => R.Id == streamId).Update(serialisedObjectList, serialisedPropertiesList);
+            } else
+            {
+                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, serialisedObjectList, serialisedPropertiesList));
+
+            }
         }
 
         public void addObjects(string serialisedObjectList)
