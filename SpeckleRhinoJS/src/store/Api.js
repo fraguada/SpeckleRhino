@@ -14,8 +14,6 @@ const _accounts = [ {
   serverName: "AnotherOne"
 } ]
 
-const _receivers = [] 
-
 
 export default {
   getAccounts( cb ) {
@@ -25,7 +23,6 @@ export default {
     // todo
   },
   getReceivers( cb ) {
-    cb( _receivers)
     // return typeof cefCustomObject != 'undefined' ? cb( JSON.parse( cefCustomObject.getReceivers() ) ) : cb( _receivers )
   }
 }

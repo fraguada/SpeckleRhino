@@ -42,7 +42,8 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true,
     host: '0.0.0.0',
-    disableHostCheck: true
+    disableHostCheck: true,
+    port: 9090
   },
   performance: {
     hints: false
