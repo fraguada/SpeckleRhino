@@ -68,8 +68,8 @@ export default {
       this.$store.commit( 'SET_RECEIVER_DATA',  { payload } )
 
       this.mySpkReceiver.getObjects( ( objs ) => {
-        if( typeof cefCustomObject != 'undefined' ) 
-          cefCustomObject.liveUpdate( this.spkreceiver.streamId, JSON.stringify( objs ), JSON.stringify(objectProperties ) )
+          if (typeof cefCustomObject != 'undefined')
+              cefCustomObject.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
       })
     }, 
     metadataUpdate( name, layers ) {

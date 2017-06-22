@@ -141,6 +141,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SpeckleColor.cs" />
+    <Compile Include="SpeckleLayer.cs" />
+    <Compile Include="SpeckleLayerMaterial.cs" />
     <Compile Include="SpeckleRhinoCommand.cs" />
     <Compile Include="SpeckleRhinoDisplayConduit.cs" />
     <Compile Include="SpeckleRhinoModel.cs" />

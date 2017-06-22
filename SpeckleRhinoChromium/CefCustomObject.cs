@@ -71,23 +71,16 @@ namespace SpeckleRhino
             Process.Start(start);
         }
 
-        public void liveUpdate(string streamId, string serialisedObjectList, string serialisedPropertiesList)
+        public void liveUpdate(string streamId, string name, string serialisedObjectList, string serialisedPropertiesList, string serialsedLayersList, string serialisedLayerMaterialsList)
         {
             Debug.WriteLine(streamId);
-            //here I need to pass this info to a stream dictionary.
-            //this should be of type <string streamId, object>
-            //if containsKey streamId, update object
-            //if not, add key value
-
-            //Should raise view model property changed event handler
 
             if(_viewModel.Model.Receivers.Any(R => R.Id == streamId))
             {
-                _viewModel.Model.Receivers.First(R => R.Id == streamId).Update(serialisedObjectList, serialisedPropertiesList);
+                _viewModel.Model.Receivers.First(R => R.Id == streamId).Update(serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList);
             } else
             {
-                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, serialisedObjectList, serialisedPropertiesList));
-
+                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, name, serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList));
             }
         }
 

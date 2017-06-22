@@ -28,13 +28,13 @@ namespace SpeckleRhino
         /// </summary>
         public string Id { get; private set; }
 
+        public string Name { get; private set; }
+
         private SpeckleRhinoDisplayConduit Display;
         public string SerializedObjects { get; private set; }
         public string SerializedProperties { get; private set; }
-
         public List<GeometryBase> Geometry { get; private set; }
-
-        public List<RhinoObject> Objects { get; private set; }
+        public List<Guid> Ids { get; private set; }
 
         //Will this class hold a collection of uuids to track geometry in the document?
 
@@ -56,13 +56,14 @@ namespace SpeckleRhino
             Id = id;
         }
 
-        public SpeckleRhinoReceiverWorker(string id, string serializedObjectList, string serializedPropertiesList) : this()
+        public SpeckleRhinoReceiverWorker(string id, string name, string serializedObjectList, string serializedPropertiesList, string serializedLayerList, string serializedLayerMaterialsList) : this()
         {
             Id = id;
+            Name = name;
             Geometry = new List<GeometryBase>();
-            Objects = new List<RhinoObject>();
-            Update(serializedObjectList, serializedPropertiesList);
-            
+            Ids = new List<Guid>();
+            CreateLayers(serializedLayerList, serializedLayerMaterialsList);
+            Update(serializedObjectList, serializedPropertiesList, serializedLayerList, serializedLayerMaterialsList);
         }
 
         #endregion Constructors
@@ -73,7 +74,36 @@ namespace SpeckleRhino
         {
             throw new NotImplementedException();
         }
-        public void Update(string serializedObjectList, string serializedPropertiesList)
+
+        public void CreateLayers (string serializedLayers, string serializedLayerMaterials)
+        {
+            var layersList = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayers);
+            var layerMaterialsList = JsonConvert.DeserializeObject<List<SpeckleLayerMaterial>>(serializedLayerMaterials);
+
+            var parentLayerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name, true);
+            if (parentLayerId == -1)
+            {
+                var layer = new Layer() { Name = this.Name };
+                parentLayerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
+            }
+
+            foreach(var speckleLayer in layersList)
+            {
+                var layerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "::" + speckleLayer.Name, true);
+                if (layerId == -1)
+                {
+                    var layer = new Layer()
+                    {   Name = speckleLayer.Name,
+                        Id = speckleLayer.Id,
+                        ParentLayerId = RhinoDoc.ActiveDoc.Layers[parentLayerId].Id                  
+                     };
+                    RhinoDoc.ActiveDoc.Layers.Add(layer);
+                }
+            }
+
+        }
+
+        public void Update(string serializedObjectList, string serializedPropertiesList, string serializedLayersList, string serializedLayerMaterialsList)
         {
             Debug.WriteLine("Should be Updating Objects");
             if (SerializedObjects != serializedObjectList)
@@ -82,57 +112,91 @@ namespace SpeckleRhino
                 
                 var objectList = JsonConvert.DeserializeObject<List<dynamic>>(SerializedObjects);
                 var propertiesList = JsonConvert.DeserializeObject<List<dynamic>>(serializedPropertiesList);
+                var layersList = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayersList);
+                var layerMaterialsList = JsonConvert.DeserializeObject<List<dynamic>>(serializedLayerMaterialsList);
 
-                GhRhConveter c = new GhRhConveter();
+                GhRhConveter converter = new GhRhConveter();
+
                 Geometry.Clear();
+                if (Ids != null)
+                {
+                    RhinoDoc.ActiveDoc.Objects.Delete(Ids, true);
+                    Ids.Clear();
+                }
+
                 foreach (var obj in objectList)
                 {
                     string type = (string)obj.type;
-
-                    //Objects.Add(c.encodeObject(obj));
-
+                    
                     switch (type)
                     {
                         case "Mesh":
                         case "Brep":
                         case "Curve":
-                            Geometry.Add(c.encodeObject(obj));
+
+                            Geometry.Add(converter.encodeObject(obj));
+                            
                             break;
+
                         case "Point":
-                            Geometry.Add(new Rhino.Geometry.Point(c.encodeObject(obj)));
+
+                            Geometry.Add(new Rhino.Geometry.Point(converter.encodeObject(obj)));
+                            
                             break;
+
                         case "Polyline":
-                            Polyline polyline = c.encodeObject(obj);
+
+                            Polyline polyline = converter.encodeObject(obj);
                             Geometry.Add(polyline.ToNurbsCurve());
+                            
                             break;
                         case "Circle":
-                            Circle circle = c.encodeObject(obj);
+
+                            Circle circle = converter.encodeObject(obj);
                             Geometry.Add(circle.ToNurbsCurve());
+                            
                             break;
+
                         case "Rectangle":
-                            Rectangle3d rectangle = c.encodeObject(obj);
+
+                            Rectangle3d rectangle = converter.encodeObject(obj);
                             Geometry.Add(rectangle.ToNurbsCurve());
+                            
                             break;
+
                         case "Line":
-                            Line line = c.encodeObject(obj);
+
+                            Line line = converter.encodeObject(obj);
                             Geometry.Add(line.ToNurbsCurve());
+                            
                             break;
+
                         case "Box":
-                            Box box = c.encodeObject(obj);
+
+                            Box box = converter.encodeObject(obj);
                             Geometry.Add(box.ToBrep());
+                            
                             break;
+
                         default:
+
                             RhinoApp.WriteLine("{0}", obj);
+
                             break;
                     }
 
 
                 }
 
+                //ObjectAttributes oa = new ObjectAttributes() {  };
+
+                foreach (var geo in Geometry)
+                    Ids.Add(RhinoDoc.ActiveDoc.Objects.Add(geo));
+
                 DisplayContents();
 
             }
-            //throw new NotImplementedException();
+           
         }
 
         public void DisplayContents()
