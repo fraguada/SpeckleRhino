@@ -75,7 +75,7 @@ export default {
       if( this.selectedAccount < 0 ) return alert( 'Please select an account to use.' )
       if( this.streamId === '' ) return alert( 'Please input a streamId.' )
       let account = this.allAccounts[ this.selectedAccount ]
-      let receiver = { streamId: this.streamId, token: account.apiToken, serverUrl: account.rootUrl }
+      let receiver = { streamId: this.streamId, token: account.apiToken, serverUrl: account.rootUrl, name: 'Loading...', layers:[], layerMaterials: [] }
       this.$store.commit( 'ADD_RECEIVER', { receiver } )
       this.closeMyself()
       // this.$emit( 'close' )

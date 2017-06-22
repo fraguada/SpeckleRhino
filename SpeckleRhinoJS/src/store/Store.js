@@ -55,7 +55,6 @@ export default new Vuex.Store( {
     },
 
     ADD_RECEIVER( state, { receiver } ) {
-      console.log( receiver )
       state.receivers.push( receiver )
     },
 
@@ -115,7 +114,7 @@ export default new Vuex.Store( {
     },
 
     SET_RECEIVER_DATA( state, { payload } ) {
-      console.log( payload )
+
       let target = state.receivers.find( rec => rec.streamId === payload.streamId )
       target.name = payload.name
       target.layers = payload.layers

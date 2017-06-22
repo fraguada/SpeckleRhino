@@ -8,6 +8,7 @@ Vue.use( VueMaterial )
 Vue.use( Vuex )
 
 // const rh = cefCustomObject
+window.bus = new Vue( )
 
 Vue.material.registerTheme( 'default' , {
   primary: 'black',
