@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-
+using System.Drawing;
 
 namespace SpeckleRhino
 {
@@ -23,48 +23,79 @@ namespace SpeckleRhino
 
         #region Members
         /// <summary>
-        /// The Id for the receiver.  This can be the stream id, or something else identifyable that
-        /// connects this to the js receiver.
+        /// The streamId for the receiver.
         /// </summary>
         public string Id { get; private set; }
 
+        /// <summary>
+        /// The stream Name.
+        /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// The Display Conduit for showing stream objects and their status.
+        /// </summary>
         private SpeckleRhinoDisplayConduit Display;
+
+        /// <summary>
+        /// The string of all serialzed objects.
+        /// </summary>
         public string SerializedObjects { get; private set; }
+
+        /// <summary>
+        /// The string of all serialzed object properties.
+        /// </summary>
         public string SerializedProperties { get; private set; }
+
+        /// <summary>
+        /// A collection of geometry to add to the document and send to the Display Conduit.
+        /// </summary>
         public List<GeometryBase> Geometry { get; private set; }
+
+        /// <summary>
+        /// A collection of guid of objects added to the Rhino Document
+        /// </summary>
         public List<Guid> Ids { get; private set; }
 
+        /// <summary>
+        /// The layer index of the parent layer.
+        /// </summary>
+        public int ParentLayerId { get; private set; }
+
+        /// <summary>
+        /// A collection of layer indices for the sublayers.
+        /// </summary>
         public List<int> LayerIds { get; private set; }
 
-        //Will this class hold a collection of uuids to track geometry in the document?
-
-        //Will this class do the conduit work as well?
-
-        //Need to develop the events/handlers to communicate with Cef
+        public List<Color> LayerColors { get; set; }
 
         #endregion Members
 
         #region Constructors
 
+        /// <summary>
+        /// Base ctor.
+        /// </summary>
         public SpeckleRhinoReceiverWorker()
         {
             Type = "Receiver";
         }
 
-        public SpeckleRhinoReceiverWorker(string id) : this()
-        {
-            Id = id;
-        }
-
+        /// <summary>
+        /// ctor for the Receiver Worker.
+        /// </summary>
+        /// <param name="id">The streamId.</param>
+        /// <param name="name">The name of the stream.</param>
+        /// <param name="serializedObjectList">The objects coming from the stream.</param>
+        /// <param name="serializedPropertiesList">The object properties coming from the stream.</param>
+        /// <param name="serializedLayersList">The layer data coming from the stream.</param>
+        /// <param name="serializedLayerMaterialsList">The layer material data coming from the stream.</param>
         public SpeckleRhinoReceiverWorker(string id, string name, string serializedObjectList, string serializedPropertiesList, string serializedLayersList, string serializedLayerMaterialsList) : this()
         {
             Id = id;
             Name = name;
             Geometry = new List<GeometryBase>();
             Ids = new List<Guid>();
-            
             Update(serializedObjectList, serializedPropertiesList, serializedLayersList, serializedLayerMaterialsList);
         }
 
@@ -77,42 +108,58 @@ namespace SpeckleRhino
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Create the layers in the Rhino Document associated with this stream.
+        /// </summary>
+        /// <param name="serializedLayers">The layer data coming from the stream.</param>
+        /// <param name="serializedLayerMaterials">The layer material data coming from the stream.</param>
         public void CreateLayers (string serializedLayers, string serializedLayerMaterials)
         {
             LayerIds = new List<int>();
+            LayerColors = new List<Color>();
             var layersList = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayers);
             var layerMaterialsList = JsonConvert.DeserializeObject<List<SpeckleLayerMaterial>>(serializedLayerMaterials);
 
-            var parentLayerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name, true);
-            if (parentLayerId == -1)
+            ParentLayerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + Id + "]", true);
+
+            if (ParentLayerId == -1)
             {
-                var layer = new Layer() { Name = this.Name };
-                parentLayerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
+                var layer = new Layer() { Name = this.Name + "_[" + Id + "]" };
+                ParentLayerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
             }
             else
             {
                 //delete existing sublayers and their objects
+                foreach (var layer in RhinoDoc.ActiveDoc.Layers[ParentLayerId].GetChildren())
+                    RhinoDoc.ActiveDoc.Layers.Delete(layer.LayerIndex, true);
             }
 
             foreach(var speckleLayer in layersList)
             {
-                var layerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "::" + speckleLayer.Name, true);
+                var layerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + Id + "]" + "::" + speckleLayer.Name, true);
+                var layerMaterial = layerMaterialsList.Find(lm => lm.Id == speckleLayer.Id);
                 if (layerId == -1)
                 {
                     var layer = new Layer()
-                    {   Name = speckleLayer.Name,
+                    { Name = speckleLayer.Name,
                         Id = speckleLayer.Id,
-                        ParentLayerId = RhinoDoc.ActiveDoc.Layers[parentLayerId].Id                  
+                        ParentLayerId = RhinoDoc.ActiveDoc.Layers[ParentLayerId].Id,
+                        Color = layerMaterial.Color.ToColor(),
+                        IsVisible = layerMaterial.Visible
                      };
                     layerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
                 }
 
                 for (int i = speckleLayer.StartIndex; i < speckleLayer.StartIndex + speckleLayer.ObjectCount; i++)
+                {
                     LayerIds.Add(layerId);
+                    LayerColors.Add(layerMaterial.Color.ToColor());
+                }
             }
 
         }
 
+        
         public void Update(string serializedObjectList, string serializedPropertiesList, string serializedLayersList, string serializedLayerMaterialsList)
         {
             CreateLayers(serializedLayersList, serializedLayerMaterialsList);
@@ -124,8 +171,6 @@ namespace SpeckleRhino
                 
                 var objectList = JsonConvert.DeserializeObject<List<dynamic>>(SerializedObjects);
                 var propertiesList = JsonConvert.DeserializeObject<List<dynamic>>(serializedPropertiesList);
-                var layersList = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayersList);
-                var layerMaterialsList = JsonConvert.DeserializeObject<List<dynamic>>(serializedLayerMaterialsList);
 
                 GhRhConveter converter = new GhRhConveter();
 
@@ -200,10 +245,6 @@ namespace SpeckleRhino
 
                 }
 
-                //ObjectAttributes oa = new ObjectAttributes() {   };
-
-                RhinoApp.WriteLine("Geometry {0}, LayerIds {1} ",Geometry.Count,LayerIds.Count);
-
                 for (int i = 0; i < Geometry.Count; i++)
                     Ids.Add(RhinoDoc.ActiveDoc.Objects.Add(Geometry[i], new ObjectAttributes() { LayerIndex = LayerIds[i] } ));
 
@@ -213,22 +254,29 @@ namespace SpeckleRhino
            
         }
 
+        /// <summary>
+        /// Display the contents of the stream in a display conduit.
+        /// </summary>
         public void DisplayContents()
         {
             if (Display != null)
             {
 
                 Display.Geometry = Geometry;
+                Display.Colors = LayerColors;
 
             }
             else
             {
-                Display = new SpeckleRhinoDisplayConduit(Geometry) { Enabled = true };
+                Display = new SpeckleRhinoDisplayConduit(Geometry, LayerColors) { Enabled = true };
             }
 
             RhinoDoc.ActiveDoc.Views.Redraw();
         }
 
+        /// <summary>
+        /// Dispose to ensure Display Conduit is disabled.
+        /// </summary>
         public void Dispose()
         {
             if (Display != null)

@@ -14,6 +14,15 @@ namespace SpeckleRhino
 
         [JsonProperty("hex")]
         public string Hex { get; set; }
+
         public SpeckleColor() { }
+
+        public System.Drawing.Color ToColor()
+        {
+            System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(Hex);
+            
+            return System.Drawing.Color.FromArgb((int)Math.Ceiling(Alpha), color.R, color.G, color.B);
+        }
+
     }
 }
