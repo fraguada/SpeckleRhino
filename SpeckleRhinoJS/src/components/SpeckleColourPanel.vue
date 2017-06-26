@@ -1,19 +1,20 @@
 <template>
-  <div id='color-picker' v-show='visible'>
+  <div id='color-picker' v-show='visible' ref='picker' v-drag:dragable>
     <div id="dragable">
       <md-button class="md-icon-button md-dense" style='margin:0;' @click.native='visible = false'>
         <md-icon style='font-size:20px;'>close</md-icon>
         <md-tooltip md-direction="bottom">Close</md-tooltip>
       </md-button>
-    </div>
-    <div class="content">
-      <color-picker v-model='layerMaterial.color'></color-picker>
+    <!-- <compact-picker v-model='layerMaterial.color' class='actual-picker'></compact-picker> -->
+      <div class='content'>
+        <color-picker v-model='layerMaterial.color' class='actual-picker'></color-picker>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { Chrome, Compact }          from 'vue-color'
+import { Chrome, Compact, Slider }  from 'vue-color'
 import * as THREE                   from 'three'
 import debounce                     from 'debounce'
 
@@ -21,11 +22,11 @@ export default {
   name: '',
   components: {
     'color-picker': Chrome,
-    'compact-picker': Compact
+    'compact-picker': Slider
   },
   computed: {
     isGuestUser() {
-      return this.$store.getters.user.guest
+      return false
     },
     layerMaterial() {
       if( this.layerGuid != '' )
@@ -48,35 +49,11 @@ export default {
       },
       deep: true
     },
-    'layerMaterial.shininess': {
-      handler( newValue ) {
-        if( newValue < 0 ) newValue = 0
-        if( newValue > 50 ) newValue = 50
-        this.layerMaterial.threeMeshMaterial.shininess = newValue
-        this.layerMaterial.threeMeshVertexColorsMaterial.shininess = newValue
-      }
-    },
-    'layerMaterial.showEdges': {
-      handler( newValue ) {
-        this.layerMaterial.threeEdgesMaterial.visible = newValue
-      }
-    },
-    'layerMaterial.wireframe': {
-      handler( newValue ) {
-        this.layerMaterial.threeMeshMaterial.wireframe = newValue
-        this.layerMaterial.threeMeshVertexColorsMaterial.wireframe = newValue
-      }
-    },
-    // 'layerMaterial.vertexColors': {
-    //   handler( newValue ) {
-    //     this.layerMaterial.threeMeshMaterial.vertexColors = newValue
-    //     bus.$emit('renderer-layer-update-colors', { layerGuid: this.layerGuid, streamId: this.streamId } )
-    //     // this.layerMaterial.threeMeshMaterial.
-    //   }
-    // },
     'visible': {
       handler( nval ) {
-        if( !nval ) this.commitUpdates( )
+        if( !nval ) return this.commitUpdates( )
+        console.log( this.$refs.picker ) 
+        this.$refs.picker  
       }
     }
   },
@@ -90,12 +67,14 @@ export default {
       layerGuid:'',
       streamId: '',
       visible: false,
-      showExtra: false
+      showExtra: false,
+      pos: {}
     }
   },
   methods: {
     commitUpdates () {
       console.log( 'updating db with colors and stuffs.' )
+      return console.warn('TODO')
       if( this.$store.getters.user.guest === true ) return console.warn('not authorised')
       this.$http.post( window.SpkAppConfig.serverDetails.restApi + '/streams/' + this.streamId + '/visuals',
         { 
@@ -116,42 +95,32 @@ export default {
       this.visible = ! this.visible
       this.layerGuid = args.layerGuid
       this.streamId = args.streamId
+      this.pos = args.position
     } )
   }
 }
 </script>
 
 <style>
-#dragable {
+  #color-picker{
+    position: fixed;
+    z-index: 100;
+    left: 10px;
+    top: 10px;
+  }
+  #dragable {
     position: relative;
     top: 0px;
     left: 0px;
     height: 30px;
     cursor: move;
-    background-color: white;
+    background-color: black;
+    color: white;
     text-align: right;
     line-height: 30px;
-}
-#dragable span {
-  /*width: 220px;*/
-  line-height: 30px;
-  cursor: pointer;
-}
-#color-picker{
-  position: fixed;
-  z-index: 100;
-  left: 420px;
-  top: 10px;
-}
-.other-options{
-  border-top: 1px solid #E6E6E6;
-  box-sizing: border-box;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.content {
-  background-color: white;
-}
-
+  }
+  .content {
+    position: relative;
+    top: -3px;
+  }
 </style>

@@ -36,7 +36,7 @@
     </transition>
     
     <receiver-list></receiver-list>
-    
+    <speckle-colour-panel></speckle-colour-panel>
   </div>
 </template>
 

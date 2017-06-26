@@ -6,7 +6,7 @@
     </span>
     <span class="layer-buttons"> 
       <!-- <md-icon @click.native='showColorPicker'><md-tooltip>Bake Layer</md-tooltip>file_download</md-icon> -->
-      <md-icon @click.native='showColorPicker' :style='colorStyle'><md-tooltip>Change color</md-tooltip>color_lens</md-icon>
+      <md-icon ref='colorIcon' @click.native='showColorPicker' :style='colorStyle'><md-tooltip>Change color</md-tooltip>color_lens</md-icon>
       <md-icon @click.native='toggleLayer'><md-tooltip>Toggle Visibility</md-tooltip>{{ visible ? "visibility" : "visibility_off" }}</md-icon>
     </span>
     </div>
@@ -42,7 +42,8 @@ export default {
   },
   methods: {
     showColorPicker() {
-      // bus.$emit( 'show-color-picker', { layerGuid: this.spklayer.guid, streamId: this.streamid } )
+      // console.log( this.$refs.colorIcon.$el.getBoundingClientRect() )
+      bus.$emit( 'show-color-picker', { layerGuid: this.spklayer.guid, streamId: this.streamid, postion: this.$refs.colorIcon.$el.getBoundingClientRect() } )
     },
     toggleLayer() {
       this.visible = ! this.visible
