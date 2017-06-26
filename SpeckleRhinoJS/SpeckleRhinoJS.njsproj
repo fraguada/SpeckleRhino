@@ -20,19 +20,31 @@
     <Content Include="index.html" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Compile Include="src\receiver\SpeckleReceiver.js" />
+    <Compile Include="src\store\LayerMaterial.js" />
     <Compile Include="webpack.config.js" />
     <Content Include="dist\vue-material.css" />
     <Compile Include="dist\build.js" />
     <Compile Include="src\main.js" />
+    <Content Include="src\App.vue" />
     <Content Include="src\assets\logo.png" />
     <Compile Include="src\store\Api.js" />
     <Compile Include="src\store\Store.js" />
+    <Content Include="src\components\AccountList.vue" />
+    <Content Include="src\components\NewReceiver.vue" />
+    <Content Include="src\components\NewReceiver.vue.backup" />
+    <Content Include="src\components\ReceiverList.vue" />
+    <Content Include="src\components\SpeckleReceiver.vue" />
+    <Content Include="src\components\SpeckleReceiver.vue.backup" />
+    <Content Include="src\components\SpeckleReceiverComments.vue" />
+    <Content Include="src\components\SpeckleReceiverLayer.vue" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist" />
     <Folder Include="src" />
     <Folder Include="src\assets" />
     <Folder Include="src\components" />
+    <Folder Include="src\receiver\" />
     <Folder Include="src\store" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />

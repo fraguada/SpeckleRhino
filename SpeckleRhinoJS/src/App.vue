@@ -65,8 +65,8 @@ export default {
   },
   methods: {
     openConsole () {
-      if( cefCustomObject )
-        cefCustomObject.showDevTools()
+      if( speckleRhinoPipeline )
+          speckleRhinoPipeline.showDevTools()
     }
   },
   created () {

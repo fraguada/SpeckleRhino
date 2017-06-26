@@ -17,12 +17,12 @@ const _accounts = [ {
 
 export default {
   getAccounts( cb ) {
-    return typeof cefCustomObject != 'undefined' ? cb( JSON.parse( cefCustomObject.getAccounts() ) ) : cb( _accounts )
+      return typeof speckleRhinoPipeline != 'undefined' ? cb(JSON.parse(speckleRhinoPipeline.getAccounts() ) ) : cb( _accounts )
   },
   addAccount( account, cb ) {
     // todo
   },
   getReceivers( cb ) {
-    // return typeof cefCustomObject != 'undefined' ? cb( JSON.parse( cefCustomObject.getReceivers() ) ) : cb( _receivers )
+    // return typeof speckleRhinoPipeline != 'undefined' ? cb( JSON.parse( speckleRhinoPipeline.getReceivers() ) ) : cb( _receivers )
   }
 }

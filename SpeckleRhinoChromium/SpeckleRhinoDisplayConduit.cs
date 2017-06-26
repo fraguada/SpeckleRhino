@@ -1,5 +1,6 @@
 ﻿using Rhino.Display;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace SpeckleRhino
@@ -10,6 +11,8 @@ namespace SpeckleRhino
 
         public List<Color> Colors { get; set; }
 
+        public List<bool> VisibleList { get; set; }
+
         public SpeckleRhinoDisplayConduit() { }
 
         public SpeckleRhinoDisplayConduit(List<Rhino.Geometry.GeometryBase> geometry):this()
@@ -17,10 +20,11 @@ namespace SpeckleRhino
             Geometry = geometry;
         }
 
-        public SpeckleRhinoDisplayConduit(List<Rhino.Geometry.GeometryBase> geometry, List<Color> colors) : this()
+        public SpeckleRhinoDisplayConduit(List<Rhino.Geometry.GeometryBase> geometry, List<Color> colors, List<bool> visibileList) : this()
         {
             Geometry = geometry;
             Colors = colors;
+            VisibleList = visibileList;
         }
 
         protected override void CalculateBoundingBox(CalculateBoundingBoxEventArgs e)
@@ -53,23 +57,31 @@ namespace SpeckleRhino
             if (null != Geometry)
                 foreach (var obj in Geometry)
                 {
+                    
                     switch (obj.ObjectType)
                     {
                         case Rhino.DocObjects.ObjectType.Point:
-                            e.Display.DrawPoint((obj as Rhino.Geometry.Point).Location, Colors[cnt]);
+                            if (VisibleList[cnt])
+                                e.Display.DrawPoint((obj as Rhino.Geometry.Point).Location, Colors[cnt]);
                             break;
                         case Rhino.DocObjects.ObjectType.Curve:
-                            e.Display.DrawCurve((obj as Rhino.Geometry.Curve), Colors[cnt]);
+                            if (VisibleList[cnt])
+                                e.Display.DrawCurve((obj as Rhino.Geometry.Curve), Colors[cnt]);
                             break;
                         case Rhino.DocObjects.ObjectType.Mesh:
-                            Rhino.Display.DisplayMaterial material = new Rhino.Display.DisplayMaterial(Colors[cnt], 0.5);
-                            e.Display.DrawMeshShaded((obj as Rhino.Geometry.Mesh), material);
-                            e.Display.DrawMeshWires((obj as Rhino.Geometry.Mesh), Colors[cnt]);
+                            if (VisibleList[cnt]) { 
+                                Rhino.Display.DisplayMaterial material = new Rhino.Display.DisplayMaterial(Colors[cnt], 0.5);
+                                e.Display.DrawMeshShaded((obj as Rhino.Geometry.Mesh), material);
+                                e.Display.DrawMeshWires((obj as Rhino.Geometry.Mesh), Colors[cnt]);
+                            }
                             break;
                         case Rhino.DocObjects.ObjectType.Brep:
-                            Rhino.Display.DisplayMaterial materialBrep = new Rhino.Display.DisplayMaterial(Colors[cnt], 0.5);
-                            e.Display.DrawBrepShaded((obj as Rhino.Geometry.Brep), materialBrep);
-                            e.Display.DrawBrepWires((obj as Rhino.Geometry.Brep), Colors[cnt]);
+                            if (VisibleList[cnt])
+                            {
+                                Rhino.Display.DisplayMaterial materialBrep = new Rhino.Display.DisplayMaterial(Colors[cnt], 0.5);
+                                e.Display.DrawBrepShaded((obj as Rhino.Geometry.Brep), materialBrep);
+                                e.Display.DrawBrepWires((obj as Rhino.Geometry.Brep), Colors[cnt]);
+                            }
                             break;
                         default:
                             Rhino.RhinoApp.WriteLine("SpeckleRhino: " + obj.ObjectType.ToString() + " is not supported");

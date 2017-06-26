@@ -67,7 +67,20 @@ namespace SpeckleRhino
         /// </summary>
         public List<int> LayerIds { get; private set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<SpeckleLayer> SpeckleLayers { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public List<Color> LayerColors { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<bool> VisibleList { get; private set; }
 
         #endregion Members
 
@@ -108,6 +121,8 @@ namespace SpeckleRhino
             throw new NotImplementedException();
         }
 
+
+
         /// <summary>
         /// Create the layers in the Rhino Document associated with this stream.
         /// </summary>
@@ -117,7 +132,9 @@ namespace SpeckleRhino
         {
             LayerIds = new List<int>();
             LayerColors = new List<Color>();
-            var layersList = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayers);
+            VisibleList = new List<bool>();
+
+            SpeckleLayers = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayers);
             var layerMaterialsList = JsonConvert.DeserializeObject<List<SpeckleLayerMaterial>>(serializedLayerMaterials);
 
             ParentLayerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + Id + "]", true);
@@ -134,7 +151,7 @@ namespace SpeckleRhino
                     RhinoDoc.ActiveDoc.Layers.Delete(layer.LayerIndex, true);
             }
 
-            foreach(var speckleLayer in layersList)
+            foreach(var speckleLayer in SpeckleLayers)
             {
                 var layerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + Id + "]" + "::" + speckleLayer.Name, true);
                 var layerMaterial = layerMaterialsList.Find(lm => lm.Id == speckleLayer.Id);
@@ -144,8 +161,8 @@ namespace SpeckleRhino
                     { Name = speckleLayer.Name,
                         Id = speckleLayer.Id,
                         ParentLayerId = RhinoDoc.ActiveDoc.Layers[ParentLayerId].Id,
-                        Color = layerMaterial.Color.ToColor(),
-                        IsVisible = layerMaterial.Visible
+                        Color = layerMaterial.Color.ToColor()
+                        //IsVisible = layerMaterial.Visible
                      };
                     layerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
                 }
@@ -154,6 +171,7 @@ namespace SpeckleRhino
                 {
                     LayerIds.Add(layerId);
                     LayerColors.Add(layerMaterial.Color.ToColor());
+                    VisibleList.Add(layerMaterial.Visible);
                 }
             }
 
@@ -261,20 +279,43 @@ namespace SpeckleRhino
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deserializedLayerData"></param>
+        public void LayerVisibilityUpdate(SpeckleLayerData deserializedLayerData)
+        {
+
+            //Debug.WriteLine("SpeckleRhino: received LayerVis update.  Vis: {0}", deserializedLayerData.Visible);
+
+            SpeckleLayer updatedLayer = SpeckleLayers.Find(sl => sl.Id == deserializedLayerData.Id);
+
+            for (int i = updatedLayer.StartIndex; i < updatedLayer.StartIndex + updatedLayer.ObjectCount; i++)
+            {
+                VisibleList[i] = deserializedLayerData.Visible;
+            }
+
+            DisplayContents();
+
+        }
+
+        /// <summary>
         /// Display the contents of the stream in a display conduit.
         /// </summary>
         public void DisplayContents()
         {
+            Debug.WriteLine("Geometry: {0}, Colors: {1}, Visible: {2}",Geometry.Count, LayerColors.Count, VisibleList.Count);
+
             if (Display != null)
             {
 
                 Display.Geometry = Geometry;
                 Display.Colors = LayerColors;
+                Display.VisibleList = VisibleList;
 
             }
             else
             {
-                Display = new SpeckleRhinoDisplayConduit(Geometry, LayerColors) { Enabled = true };
+                Display = new SpeckleRhinoDisplayConduit(Geometry, LayerColors, VisibleList) { Enabled = true };
             }
 
             RhinoDoc.ActiveDoc.Views.Redraw();

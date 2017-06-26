@@ -46,9 +46,12 @@ export default {
       bus.$emit( 'show-color-picker', { layerGuid: this.spklayer.guid, streamId: this.streamid, postion: this.$refs.colorIcon.$el.getBoundingClientRect() } )
     },
     toggleLayer() {
-      this.visible = ! this.visible
-       if( typeof cefCustomObject != 'undefined' ) 
-          cefCustomObject.layerToggle( JSON.stringify( { visible: this.visible, layerGuid: this.spklayer.guid, streamId: this.streamId } ) )
+        this.visible = !this.visible
+        //console.log(this.visible);
+        if (typeof speckleRhinoPipeline != 'undefined') {
+            var layerData = { streamId: this.streamid, guid: this.spklayer.guid, visibility: this.visible }
+            speckleRhinoPipeline.layerVisibilityUpdate(JSON.stringify(layerData));
+        }
     }
   }, 
   mounted() {

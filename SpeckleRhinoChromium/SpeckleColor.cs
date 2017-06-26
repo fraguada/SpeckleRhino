@@ -21,7 +21,7 @@ namespace SpeckleRhino
         {
             System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(Hex);
             
-            return System.Drawing.Color.FromArgb((int)Math.Ceiling(Alpha), color.R, color.G, color.B);
+            return System.Drawing.Color.FromArgb(color.R, color.G, color.B);
         }
 
     }

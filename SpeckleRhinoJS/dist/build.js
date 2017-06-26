@@ -70776,7 +70776,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].use(__WEBPACK_IMPORTED_MODU
 
 /* harmony default export */ __webpack_exports__["a"] = (new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
   state: {
-    accounts: [], //JSON.parse( cefCustomObject.getAccounts() )
+    accounts: [], //JSON.parse( speckleRhinoPipeline.getAccounts() )
     receivers: [],
     comments: []
   },
@@ -72254,7 +72254,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       this.isStale = true;
       this.mySpkReceiver.getObjects(function (objs) {
-        if (typeof cefCustomObject != 'undefined') cefCustomObject.liveUpdate(_this2.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(_this2.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(_this2.spkreceiver.layerMaterials));
+        if (typeof speckleRhinoPipeline != 'undefined') speckleRhinoPipeline.liveUpdate(_this2.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(_this2.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(_this2.spkreceiver.layerMaterials));
       });
     },
     liveUpdate: function liveUpdate(name, layers, objects, history) {
@@ -72268,13 +72268,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.$store.commit('SET_RECEIVER_DATA', { payload: payload });
       this.isStale = true;
       this.mySpkReceiver.getObjects(function (objs) {
-        if (typeof cefCustomObject != 'undefined') cefCustomObject.liveUpdate(_this3.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(_this3.spkreceiver.layerMaterials));
+        if (typeof speckleRhinoPipeline != 'undefined') speckleRhinoPipeline.liveUpdate(_this3.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(_this3.spkreceiver.layerMaterials));
       });
     },
     metadataUpdate: function metadataUpdate(name, layers) {
       var payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers };
       this.$store.commit('SET_RECEIVER_METADATA', { payload: payload });
-      if (typeof cefCustomObject != 'undefined') cefCustomObject.metadataUpdate(name, JSON.stringify(layers));
+      if (typeof speckleRhinoPipeline != 'undefined') speckleRhinoPipeline.metadataUpdate(name, JSON.stringify(layers));
     },
     objLoadProgressEv: function objLoadProgressEv(loaded) {
       this.objLoadProgress = (loaded + 1) / this.objListLength * 100;
@@ -72817,13 +72817,13 @@ var _accounts = [{
 
 /* harmony default export */ __webpack_exports__["a"] = ({
   getAccounts: function getAccounts(cb) {
-    return typeof cefCustomObject != 'undefined' ? cb(JSON.parse(cefCustomObject.getAccounts())) : cb(_accounts);
+    return typeof speckleRhinoPipeline != 'undefined' ? cb(JSON.parse(speckleRhinoPipeline.getAccounts())) : cb(_accounts);
   },
   addAccount: function addAccount(account, cb) {
     // todo
   },
   getReceivers: function getReceivers(cb) {
-    // return typeof cefCustomObject != 'undefined' ? cb( JSON.parse( cefCustomObject.getReceivers() ) ) : cb( _receivers )
+    // return typeof speckleRhinoPipeline != 'undefined' ? cb( JSON.parse( speckleRhinoPipeline.getReceivers() ) ) : cb( _receivers )
   }
 });
 
