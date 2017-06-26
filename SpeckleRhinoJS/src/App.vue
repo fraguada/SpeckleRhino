@@ -30,25 +30,29 @@
         <md-tooltip md-direction="bottom">New Sender</md-tooltip>
       </md-button>
       </md-speed-dial>
+    
     <transition name="fade">
       <new-receiver v-show='createNewAccount===true' v-on:close='createNewAccount=false'></new-receiver>
     </transition>
+    
     <receiver-list></receiver-list>
-
+    
   </div>
 </template>
 
 <script>
-import AccountList      from './components/AccountList.vue'
-import ReceiverList     from './components/ReceiverList.vue'
-import NewReceiver      from './components/NewReceiver.vue'
+import AccountList          from './components/AccountList.vue'
+import ReceiverList         from './components/ReceiverList.vue'
+import NewReceiver          from './components/NewReceiver.vue'
+import SpeckleColourPanel   from './components/SpeckleColourPanel.vue'
 
 export default {
   name: 'app',
   components: {
     AccountList,
     ReceiverList,
-    NewReceiver
+    NewReceiver,
+    SpeckleColourPanel
   },
   data () {
     return {
