@@ -9,7 +9,8 @@ Vue.use(Vuex)
 export default new Vuex.Store( {
   state: { 
     accounts: [], //JSON.parse( cefCustomObject.getAccounts() )
-    receivers: []
+    receivers: [],
+    comments: [],
   },
   getters: {
     allAccounts: state =>  state.accounts,
@@ -30,7 +31,10 @@ export default new Vuex.Store( {
       let arr = []
       state.receivers.forEach( rec => arr.push( rec.layerMaterials ) )
       return arr.concat.apply( [], arr )
-    }
+    },
+    receiverComments: state => ( streamId ) => {
+      return state.comments.filter( comment => comment.streamId === streamId ).reverse()
+    },
   },
   actions: {
     getAllAccounts ( { commit } ) {
@@ -56,6 +60,14 @@ export default new Vuex.Store( {
 
     ADD_RECEIVER( state, { receiver } ) {
       state.receivers.push( receiver )
+    },
+    
+    ADD_COMMENT( state, { payload } ) {
+      state.comments.push( payload )
+    },
+
+    ADD_COMMENTS( state, { payload } ) {
+      state.comments.push( ...payload.comments )
     },
 
     INIT_RECEIVER_DATA( state, { payload } ) {

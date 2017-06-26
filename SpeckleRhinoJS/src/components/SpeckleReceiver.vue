@@ -18,7 +18,7 @@
             <speckle-receiver-layer v-for='layer in layers' :key='layer.guid' :spklayer='layer' :streamid='spkreceiver.streamId'></speckle-receiver-layer>
         </md-tab>
         <md-tab id='comments' md-label='views' class='receiver-tabs'>
-          
+          <speckle-receiver-comments :streamid='spkreceiver.streamId' xxxv-on:comment-submit='commentSubmit' ></speckle-receiver-comments>
         </md-tab>
         <md-tab id='versions' md-label='versions' class='receiver-tabs'>
         <br>
@@ -34,12 +34,14 @@
 
 <script>
 import ReceiverClient             from '../receiver/SpeckleReceiver' // temporary solution to fix uglify error on build.
+import SpeckleReceiverComments    from './SpeckleReceiverComments.vue'
 import SpeckleReceiverLayer       from './SpeckleReceiverLayer.vue' 
 
 export default {
   name: 'SpeckleReceiver',
   components: {
-    SpeckleReceiverLayer
+    SpeckleReceiverLayer,
+    SpeckleReceiverComments
   },
   props: [ 'spkreceiver' ],
   computed: {
@@ -54,6 +56,7 @@ export default {
     return {
       showProgressBar: true,
       objLoadProgress: 100,
+      objListLength: 1,
       comments: 'Hello World. How Are you? Testing testing 123.',
       isStale: false,
       expanded: true
@@ -64,22 +67,23 @@ export default {
       this.errror = err
     },
     getComments( ) {
-      // this.$http.get( window.SpkAppConfig.serverDetails.restApi + '/comments/' + this.spkreceiver.streamId )
-      // .then( response => {
-      //   if( !response.data.success ) throw new Error( 'Failed to retrieve comments for stream ' + this.spkreceiver.streamId )
-      //   // if( response.data.comments.length <= 0 ) return console.warn( 'Stream had no commnets.' )
-      //   let payload = { comments: response.data.comments }
-      //   this.$store.commit( 'ADD_COMMENTS', { payload } )
-      // })
-      // .catch( err => {
-      //   console.warn( err )
-      // })
+      this.$http.get( this.spkreceiver.restApi + '/comments/' + this.spkreceiver.streamId )
+      .then( response => {
+        if( !response.data.success ) throw new Error( 'Failed to retrieve comments for stream ' + this.spkreceiver.streamId )
+        // if( response.data.comments.length <= 0 ) return console.warn( 'Stream had no commnets.' )
+        let payload = { comments: response.data.comments }
+        this.$store.commit( 'ADD_COMMENTS', { payload } )
+      })
+      .catch( err => {
+        console.warn( err )
+      })
     },
     receiverReady( name, layers, objects, history, layerMaterials ) {
       this.getComments() 
-      
       this.showProgressBar = false
       this.objLoadProgress = 0
+      this.objListLength = objects.length
+
       let payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers, objects: objects, layerMaterials: layerMaterials }
       this.$store.commit( 'INIT_RECEIVER_DATA',  { payload } )
   
@@ -92,6 +96,7 @@ export default {
     liveUpdate( name, layers, objects, history ) {
       this.showProgressBar = false
       this.objLoadProgress = 0
+      this.objListLength = objects.length
 
       let payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers, objects: objects }
       this.$store.commit( 'SET_RECEIVER_DATA',  { payload } )
@@ -108,7 +113,7 @@ export default {
         cefCustomObject.metadataUpdate( name, JSON.stringify( layers ) )
     },
     objLoadProgressEv( loaded ) {
-      this.objLoadProgress = ( loaded + 1 ) / this.objects.length * 100
+      this.objLoadProgress = ( loaded + 1 ) / this.objListLength * 100
     },
     commentSubmit( comment ) {
       // let payload = comment
@@ -154,7 +159,7 @@ export default {
 
 <style>
 .line-height-adjustment{
-  line-height: 30px;
+  line-height: 34px;
 }
 .receiver {
   margin-bottom: 10px;

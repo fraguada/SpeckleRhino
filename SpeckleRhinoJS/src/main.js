@@ -1,13 +1,15 @@
-import Vue from 'vue'
-import VueMaterial from 'vue-material'
-import Vuex from 'vuex'
-import App from './App.vue'
-import Store from './store/Store.js'
+import Vue            from 'vue'
+import VueMaterial    from 'vue-material'
+import Vuex           from 'vuex'
+import Axios          from 'axios'
+import App            from './App.vue'
+import Store          from './store/Store.js'
+
+Vue.prototype.$http = Axios
 
 Vue.use( VueMaterial )
 Vue.use( Vuex )
 
-// const rh = cefCustomObject
 window.bus = new Vue( )
 
 Vue.material.registerTheme( 'default' , {
