@@ -89,8 +89,8 @@ export default {
   
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
-          if (typeof cefCustomObject != 'undefined')
-              cefCustomObject.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(this.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
+          if (typeof speckleRhinoPipeline != 'undefined')
+              speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(this.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
       })
     },
     liveUpdate( name, layers, objects, history ) {
@@ -102,15 +102,15 @@ export default {
       this.$store.commit( 'SET_RECEIVER_DATA',  { payload } )
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
-        if( typeof cefCustomObject != 'undefined' ) 
-            cefCustomObject.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
+        if( typeof speckleRhinoPipeline != 'undefined' ) 
+            speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
       })
     },
     metadataUpdate( name, layers ) {
       let payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers }
       this.$store.commit( 'SET_RECEIVER_METADATA',  { payload } )
-      if( typeof cefCustomObject != 'undefined' ) 
-        cefCustomObject.metadataUpdate( name, JSON.stringify( layers ) )
+      if( typeof speckleRhinoPipeline != 'undefined' ) 
+        speckleRhinoPipeline.metadataUpdate( name, JSON.stringify( layers ) )
     },
     objLoadProgressEv( loaded ) {
       this.objLoadProgress = ( loaded + 1 ) / this.objListLength * 100
