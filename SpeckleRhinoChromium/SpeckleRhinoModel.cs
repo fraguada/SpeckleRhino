@@ -8,9 +8,12 @@ namespace SpeckleRhino
 
         public SpeckleRhinoReceiverWorkerCollection Receivers { get; set; }
 
+        public SpeckleRhinoSenderWorkerCollection Senders { get; set; }
+
         public SpeckleRhinoModel()
         {
             Receivers = new SpeckleRhinoReceiverWorkerCollection();
+            Senders = new SpeckleRhinoSenderWorkerCollection();
         }
     }
 }
