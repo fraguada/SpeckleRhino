@@ -176,7 +176,7 @@ namespace SpeckleRhino
                 SerializedObjects = serializedObjectList;
                 
                 var objectList = JsonConvert.DeserializeObject<List<dynamic>>(SerializedObjects);
-                var propertiesList = JsonConvert.DeserializeObject<List<dynamic>>(serializedPropertiesList);
+                //var propertiesList = JsonConvert.DeserializeObject<List<dynamic>>(serializedPropertiesList);
 
                 GhRhConveter converter = new GhRhConveter();
 
