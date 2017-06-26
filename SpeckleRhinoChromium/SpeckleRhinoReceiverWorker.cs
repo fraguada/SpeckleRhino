@@ -36,6 +36,8 @@ namespace SpeckleRhino
         public List<GeometryBase> Geometry { get; private set; }
         public List<Guid> Ids { get; private set; }
 
+        public List<int> LayerIds { get; private set; }
+
         //Will this class hold a collection of uuids to track geometry in the document?
 
         //Will this class do the conduit work as well?
@@ -56,14 +58,14 @@ namespace SpeckleRhino
             Id = id;
         }
 
-        public SpeckleRhinoReceiverWorker(string id, string name, string serializedObjectList, string serializedPropertiesList, string serializedLayerList, string serializedLayerMaterialsList) : this()
+        public SpeckleRhinoReceiverWorker(string id, string name, string serializedObjectList, string serializedPropertiesList, string serializedLayersList, string serializedLayerMaterialsList) : this()
         {
             Id = id;
             Name = name;
             Geometry = new List<GeometryBase>();
             Ids = new List<Guid>();
-            CreateLayers(serializedLayerList, serializedLayerMaterialsList);
-            Update(serializedObjectList, serializedPropertiesList, serializedLayerList, serializedLayerMaterialsList);
+            
+            Update(serializedObjectList, serializedPropertiesList, serializedLayersList, serializedLayerMaterialsList);
         }
 
         #endregion Constructors
@@ -77,6 +79,7 @@ namespace SpeckleRhino
 
         public void CreateLayers (string serializedLayers, string serializedLayerMaterials)
         {
+            LayerIds = new List<int>();
             var layersList = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayers);
             var layerMaterialsList = JsonConvert.DeserializeObject<List<SpeckleLayerMaterial>>(serializedLayerMaterials);
 
@@ -85,6 +88,10 @@ namespace SpeckleRhino
             {
                 var layer = new Layer() { Name = this.Name };
                 parentLayerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
+            }
+            else
+            {
+                //delete existing sublayers and their objects
             }
 
             foreach(var speckleLayer in layersList)
@@ -97,14 +104,19 @@ namespace SpeckleRhino
                         Id = speckleLayer.Id,
                         ParentLayerId = RhinoDoc.ActiveDoc.Layers[parentLayerId].Id                  
                      };
-                    RhinoDoc.ActiveDoc.Layers.Add(layer);
+                    layerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
                 }
+
+                for (int i = speckleLayer.StartIndex; i < speckleLayer.StartIndex + speckleLayer.ObjectCount; i++)
+                    LayerIds.Add(layerId);
             }
 
         }
 
         public void Update(string serializedObjectList, string serializedPropertiesList, string serializedLayersList, string serializedLayerMaterialsList)
         {
+            CreateLayers(serializedLayersList, serializedLayerMaterialsList);
+
             Debug.WriteLine("Should be Updating Objects");
             if (SerializedObjects != serializedObjectList)
             {
@@ -188,10 +200,12 @@ namespace SpeckleRhino
 
                 }
 
-                //ObjectAttributes oa = new ObjectAttributes() {  };
+                //ObjectAttributes oa = new ObjectAttributes() {   };
 
-                foreach (var geo in Geometry)
-                    Ids.Add(RhinoDoc.ActiveDoc.Objects.Add(geo));
+                RhinoApp.WriteLine("Geometry {0}, LayerIds {1} ",Geometry.Count,LayerIds.Count);
+
+                for (int i = 0; i < Geometry.Count; i++)
+                    Ids.Add(RhinoDoc.ActiveDoc.Objects.Add(Geometry[i], new ObjectAttributes() { LayerIndex = LayerIds[i] } ));
 
                 DisplayContents();
 
