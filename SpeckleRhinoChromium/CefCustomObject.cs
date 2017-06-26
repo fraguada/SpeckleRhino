@@ -71,58 +71,26 @@ namespace SpeckleRhino
             Process.Start(start);
         }
 
-        public void liveUpdate(string streamId, string serialisedObjectList, string serialisedPropertiesList)
+        /// <summary>
+        /// Pushes updates to the Rhino Document.
+        /// </summary>
+        /// <param name="streamId"></param>
+        /// <param name="name"></param>
+        /// <param name="serialisedObjectList"></param>
+        /// <param name="serialisedPropertiesList"></param>
+        /// <param name="serialsedLayersList"></param>
+        /// <param name="serialisedLayerMaterialsList"></param>
+        public void liveUpdate(string streamId, string name, string serialisedObjectList, string serialisedPropertiesList, string serialsedLayersList, string serialisedLayerMaterialsList)
         {
             Debug.WriteLine(streamId);
-            //here I need to pass this info to a stream dictionary.
-            //this should be of type <string streamId, object>
-            //if containsKey streamId, update object
-            //if not, add key value
-
-            //Should raise view model property changed event handler
 
             if(_viewModel.Model.Receivers.Any(R => R.Id == streamId))
             {
-                _viewModel.Model.Receivers.First(R => R.Id == streamId).Update(serialisedObjectList, serialisedPropertiesList);
+                _viewModel.Model.Receivers.First(R => R.Id == streamId).Update(serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList);
             } else
             {
-                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, serialisedObjectList, serialisedPropertiesList));
-
+                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, name, serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList));
             }
-        }
-
-        public void addObjects(string serialisedObjectList)
-        {
-            Rhino.DocObjects.Tables.ObjectTable ot = Rhino.RhinoDoc.ActiveDoc.Objects;
- 
-            GhRhConveter c = new GhRhConveter();
-            var objectList = JsonConvert.DeserializeObject<List<dynamic>>(serialisedObjectList);
-            var copy = objectList;
-
-            foreach(var obj in objectList)
-            {
-                string type = (string)obj.type;
-
-                switch (type)
-                {
-                    case "Mesh":
-                            ot.AddMesh(c.encodeObject(obj));
-                            break;
-
-                    case "Polyline":
-                            ot.AddPolyline(c.encodeObject(obj));
-                            break;
-
-                    default:
-                        RhinoApp.WriteLine("{0}",obj);
-                        break;
-                }
-        
-
-            }
-
-            Rhino.RhinoDoc.ActiveDoc.Views.Redraw();
-
         }
     }
 

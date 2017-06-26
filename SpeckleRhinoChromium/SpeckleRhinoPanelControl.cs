@@ -43,9 +43,6 @@ namespace SpeckleRhino
             m_browser.TitleChanged += OnBrowserTitleChanged;
             m_browser.AddressChanged += OnBrowserAddressChanged;
             this.Disposed += new EventHandler(OnDisposed);
-
-
- 
         }
 
         private void OnBrowserAddressChanged(object sender, AddressChangedEventArgs e)
