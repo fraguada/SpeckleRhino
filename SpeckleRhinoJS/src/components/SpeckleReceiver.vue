@@ -9,6 +9,9 @@
       </span>
       <span class="md-caption"><code style="user-select:all">{{ spkreceiver.streamId }}</code></span>
       <br>
+      <md-button class='md-dense'>Pause</md-button>
+      <md-button class='md-dense md-warn'>Remove</md-button>
+
       <md-progress md-indeterminate v-show='showProgressBar' style='margin-bottom:20px;margin-top:20px;'></md-progress>
       <!-- <div class="md-caption"><br>ID: <code>{{ spkreceiver.streamId }}</code></div> -->
     </md-card-header>
@@ -78,22 +81,26 @@ export default {
         console.warn( err )
       })
     },
-    receiverReady( name, layers, objects, history, layerMaterials ) {
+    receiverReady( name, layers, objects, objectProperties ) {
+      console.info('Receiver ready', this.spkreceiver.streamId )
       this.getComments() 
       this.showProgressBar = false
       this.objLoadProgress = 0
       this.objListLength = objects.length
 
-      let payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers, objects: objects, layerMaterials: layerMaterials }
+      let payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers, objects: objects }
       this.$store.commit( 'INIT_RECEIVER_DATA',  { payload } )
   
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
+
           if (typeof speckleRhinoPipeline != 'undefined')
               speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(this.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
+
       })
     },
-    liveUpdate( name, layers, objects, history ) {
+    liveUpdate( name, layers, objects, objectProperties ) {
+      console.info('Live update', this.spkreceiver.streamId )
       this.showProgressBar = false
       this.objLoadProgress = 0
       this.objListLength = objects.length
@@ -102,11 +109,14 @@ export default {
       this.$store.commit( 'SET_RECEIVER_DATA',  { payload } )
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
+
         if( typeof speckleRhinoPipeline != 'undefined' ) 
             speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
+
       })
     },
     metadataUpdate( name, layers ) {
+      console.info('Metadata update', this.spkreceiver.streamId )
       let payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers }
       this.$store.commit( 'SET_RECEIVER_METADATA',  { payload } )
       if( typeof speckleRhinoPipeline != 'undefined' ) 

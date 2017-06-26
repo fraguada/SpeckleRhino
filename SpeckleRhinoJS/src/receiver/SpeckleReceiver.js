@@ -113,9 +113,10 @@ export default class SpeckleReceiver extends EventEmitter {
       self.objectProperties = response.data.data.objectProperties
       
       self.name = response.data.data.name
-      self.objectProperties.forEach( prop => {
-        self.objects[ prop.objectIndex ].properties = prop.properties
-      })
+      if( self.objectProperties )
+        self.objectProperties.forEach( prop => {
+          self.objects[ prop.objectIndex ].properties = prop.properties
+        })
       return axios.get( this.restEndpoint + '/streams/' + this.streamId, { headers : { 'speckle-token': this.token,  'speckle-ws-id': this.wsSessionId } } )
     })
     .then( response => {
@@ -166,8 +167,8 @@ export default class SpeckleReceiver extends EventEmitter {
       axios.get( this.restEndpoint + '/geometry/' + obj.hash  )
         .then( response => { 
           let myObject = response.data.data
-          // reattach props
-          myObject.properties = obj.properties
+          if( obj.properties )
+            myObject.properties = obj.properties
           return callback( myObject )
         } )
         .catch( err => {
@@ -203,7 +204,6 @@ export default class SpeckleReceiver extends EventEmitter {
     this.layers = msg.args.layers
     this.objects = msg.args.objects
     this.objectProperties = msg.args.objectProperties
-
     this.objectProperties.forEach( prop => {
         this.objects[ prop.objectIndex ].properties = prop.properties
     })
