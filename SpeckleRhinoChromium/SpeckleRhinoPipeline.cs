@@ -59,31 +59,14 @@ namespace SpeckleRhino
             _instanceBrowser.ShowDevTools();
         }
 
-        public void opencmd()
-        {
-            ProcessStartInfo start = new ProcessStartInfo("cmd.exe", "/c pause");
-            Process.Start(start);
-        }
-
         public void openWeb(string url)
         {
             ProcessStartInfo start = new ProcessStartInfo(url);
             Process.Start(start);
         }
 
-        /// <summary>
-        /// Pushes updates to the Rhino Document.
-        /// </summary>
-        /// <param name="streamId"></param>
-        /// <param name="name"></param>
-        /// <param name="serialisedObjectList"></param>
-        /// <param name="serialisedPropertiesList"></param>
-        /// <param name="serialsedLayersList"></param>
-        /// <param name="serialisedLayerMaterialsList"></param>
         public void liveUpdate(string streamId, string name, string serialisedObjectList, string serialisedPropertiesList, string serialsedLayersList, string serialisedLayerMaterialsList)
         {
-            Debug.WriteLine(streamId);
-
             if(_viewModel.Model.Receivers.Any(R => R.Id == streamId))
             {
                 _viewModel.Model.Receivers.First(R => R.Id == streamId).Update(serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList);
@@ -91,6 +74,11 @@ namespace SpeckleRhino
             {
                 _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, name, serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList));
             }
+        }
+
+        public void metadataUpdate(string streamId, string name, string serialisedLayerList)
+        {
+
         }
 
         public void layerVisibilityUpdate(string layerData)

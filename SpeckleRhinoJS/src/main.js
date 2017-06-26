@@ -4,7 +4,7 @@ import Vuex           from 'vuex'
 import Axios          from 'axios'
 import App            from './App.vue'
 import Store          from './store/Store.js'
-import vueDrag          from 'vue-dragging'
+import vueDrag        from 'vue-dragging'
 
 Vue.prototype.$http = Axios
 

@@ -156,6 +156,7 @@
     <Compile Include="SpeckleRhinoPlugIn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpeckleRhinoReceiverWorker.cs" />
+    <Compile Include="SpeckleRhinoSenderWorker.cs" />
     <Compile Include="SpeckleRhinoViewModel.cs" />
     <Compile Include="SpeckleRhinoWorker.cs" />
   </ItemGroup>
