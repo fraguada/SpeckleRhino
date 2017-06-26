@@ -158,7 +158,6 @@ export default class SpeckleReceiver extends EventEmitter {
   }
 
   getObject( obj, callback ) {
-    console.log( obj )
     if( !obj ) {
       throw new Error('no obj provided')
       return
