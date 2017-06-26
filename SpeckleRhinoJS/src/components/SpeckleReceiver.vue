@@ -89,8 +89,8 @@ export default {
   
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
-        if( typeof cefCustomObject != 'undefined' ) 
-          cefCustomObject.liveUpdate( this.spkreceiver.streamId, this.spkreceiver.name, JSON.stringify( objs ), JSON.stringify( objectProperties ) )
+          if (typeof cefCustomObject != 'undefined')
+              cefCustomObject.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(this.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
       })
     },
     liveUpdate( name, layers, objects, history ) {
@@ -103,7 +103,7 @@ export default {
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
         if( typeof cefCustomObject != 'undefined' ) 
-          cefCustomObject.liveUpdate( this.spkreceiver.streamId, this.spkreceiver.name, JSON.stringify( objs ), JSON.stringify( objectProperties ) )
+            cefCustomObject.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
       })
     },
     metadataUpdate( name, layers ) {
