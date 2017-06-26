@@ -5,9 +5,9 @@
       {{ spklayer.name }} ({{spklayer.objectCount}} objs)
     </span>
     <span class="layer-buttons"> 
-      <md-icon xxxv-show='showPicker' @click.native='showColorPicker' :style='colorStyle'>color_lens</md-icon>
-      <!-- <md-icon>all_out</md-icon> -->
-      <md-icon @click.native='toggleLayer'>{{ visible ? "visibility" : "visibility_off" }}</md-icon>
+      <!-- <md-icon @click.native='showColorPicker'><md-tooltip>Bake Layer</md-tooltip>file_download</md-icon> -->
+      <md-icon @click.native='showColorPicker' :style='colorStyle'><md-tooltip>Change color</md-tooltip>color_lens</md-icon>
+      <md-icon @click.native='toggleLayer'><md-tooltip>Toggle Visibility</md-tooltip>{{ visible ? "visibility" : "visibility_off" }}</md-icon>
     </span>
     </div>
   </div>
@@ -46,7 +46,8 @@ export default {
     },
     toggleLayer() {
       this.visible = ! this.visible
-      
+       if( typeof cefCustomObject != 'undefined' ) 
+          cefCustomObject.layerToggle( JSON.stringify( { visible: this.visible, layerGuid: this.spklayer.guid, streamId: this.streamId } ) )
     }
   }, 
   mounted() {

@@ -73,18 +73,21 @@ export default {
 </script>
 
 <style>
-#app {
-  box-sizing: border-box;
-  background-color: #E6E6E6;
-}
-.accounts-tab .md-sidenav-content{
-  background-color: #E6E6E6;
-}
+  body{
+    overflow-y: scroll;
+  }
+  #app {
+    box-sizing: border-box;
+    background-color: #E6E6E6;
+  }
+  .accounts-tab .md-sidenav-content{
+    background-color: #E6E6E6;
+  }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0
-}
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0
+  }
 </style>

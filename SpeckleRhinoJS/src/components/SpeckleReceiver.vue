@@ -89,8 +89,10 @@ export default {
   
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
-        if( typeof cefCustomObject != 'undefined' ) 
-          cefCustomObject.liveUpdate( this.spkreceiver.streamId, this.spkreceiver.name, JSON.stringify( objs ), JSON.stringify( objectProperties ) )
+        if( typeof cefCustomObject != 'undefined' ) {
+          console.log('JS: receiver is ready. Sending live update to CEF')
+          cefCustomObject.liveUpdate( this.spkreceiver.streamId, this.spkreceiver.name, JSON.stringify( objs ), JSON.stringify( objectProperties ), JSON.stringify( layers ), JSON.stringify( layerMaterials ) )
+        }
       })
     },
     liveUpdate( name, layers, objects, history ) {
@@ -102,8 +104,10 @@ export default {
       this.$store.commit( 'SET_RECEIVER_DATA',  { payload } )
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
-        if( typeof cefCustomObject != 'undefined' ) 
-          cefCustomObject.liveUpdate( this.spkreceiver.streamId, this.spkreceiver.name, JSON.stringify( objs ), JSON.stringify( objectProperties ) )
+        if( typeof cefCustomObject != 'undefined' ) {
+          console.log('JS: receiver live update event, sending to CEF')
+          cefCustomObject.liveUpdate( this.spkreceiver.streamId, this.spkreceiver.name, JSON.stringify( objs ), JSON.stringify( objectProperties ), JSON.stringify( layers ), JSON.stringify( layerMaterials ) )
+        }
       })
     },
     metadataUpdate( name, layers ) {
