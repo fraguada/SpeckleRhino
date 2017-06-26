@@ -71,6 +71,15 @@ namespace SpeckleRhino
             Process.Start(start);
         }
 
+        /// <summary>
+        /// Pushes updates to the Rhino Document.
+        /// </summary>
+        /// <param name="streamId"></param>
+        /// <param name="name"></param>
+        /// <param name="serialisedObjectList"></param>
+        /// <param name="serialisedPropertiesList"></param>
+        /// <param name="serialsedLayersList"></param>
+        /// <param name="serialisedLayerMaterialsList"></param>
         public void liveUpdate(string streamId, string name, string serialisedObjectList, string serialisedPropertiesList, string serialsedLayersList, string serialisedLayerMaterialsList)
         {
             Debug.WriteLine(streamId);
@@ -82,40 +91,6 @@ namespace SpeckleRhino
             {
                 _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, name, serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList));
             }
-        }
-
-        public void addObjects(string serialisedObjectList)
-        {
-            Rhino.DocObjects.Tables.ObjectTable ot = Rhino.RhinoDoc.ActiveDoc.Objects;
- 
-            GhRhConveter c = new GhRhConveter();
-            var objectList = JsonConvert.DeserializeObject<List<dynamic>>(serialisedObjectList);
-            var copy = objectList;
-
-            foreach(var obj in objectList)
-            {
-                string type = (string)obj.type;
-
-                switch (type)
-                {
-                    case "Mesh":
-                            ot.AddMesh(c.encodeObject(obj));
-                            break;
-
-                    case "Polyline":
-                            ot.AddPolyline(c.encodeObject(obj));
-                            break;
-
-                    default:
-                        RhinoApp.WriteLine("{0}",obj);
-                        break;
-                }
-        
-
-            }
-
-            Rhino.RhinoDoc.ActiveDoc.Views.Redraw();
-
         }
     }
 

@@ -159,7 +159,13 @@ namespace SpeckleRhino
 
         }
 
-        
+        /// <summary>
+        /// Updates the Rhino Document accorting to the stream contents.
+        /// </summary>
+        /// <param name="serializedObjectList"></param>
+        /// <param name="serializedPropertiesList"></param>
+        /// <param name="serializedLayersList"></param>
+        /// <param name="serializedLayerMaterialsList"></param>
         public void Update(string serializedObjectList, string serializedPropertiesList, string serializedLayersList, string serializedLayerMaterialsList)
         {
             CreateLayers(serializedLayersList, serializedLayerMaterialsList);
