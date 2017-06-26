@@ -33,7 +33,7 @@ namespace SpeckleRhino
             m_viewModel = new SpeckleRhinoViewModel();
             SpeckleRhinoPlugIn.Instance.ViewModel = m_viewModel;
 
-            m_browser.RegisterJsObject("cefCustomObject", new CefCustomObject(m_browser, this, m_viewModel));
+            m_browser.RegisterJsObject("speckleRhinoPipeline", new SpeckleRhinoPipeline(m_browser, this, m_viewModel));
 
             SpeckleRhinoPlugIn.Instance.UserControl = this;
 

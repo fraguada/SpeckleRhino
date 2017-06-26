@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store( {
   state: { 
-    accounts: [], //JSON.parse( cefCustomObject.getAccounts() )
+      accounts: [], //JSON.parse( speckleRhinoPipeline.getAccounts() )
     receivers: [],
     comments: [],
   },
