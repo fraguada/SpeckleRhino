@@ -78,7 +78,18 @@ namespace SpeckleRhino
 
         public void metadataUpdate(string streamId, string name, string serialisedLayerList)
         {
+            // todo: update layers (that's the only thing we're interested in in this update
+        }
 
+        public void layerColorUpdate( string data )
+        {
+            var deserialisedArgs = JsonConvert.DeserializeObject(data);
+            //data = { streamId, layerGuid, color, opacity }
+        }
+
+        public void streamVisibilityUpdate(string streamId)
+        {
+            // toggles a whole layer off
         }
 
         public void layerVisibilityUpdate(string layerData)

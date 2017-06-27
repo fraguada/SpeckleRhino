@@ -9,7 +9,7 @@
       </span>
       <span class="md-caption"><code style="user-select:all">{{ spkreceiver.streamId }}</code></span>
       <span class='option-buttons' style='float:right'>
-      <!-- <md-icon>pause</md-icon> -->
+      <md-icon>visibility</md-icon>
       <md-icon>close</md-icon>
       </span>
       <br>
@@ -63,7 +63,8 @@ export default {
       objListLength: 1,
       comments: 'Hello World. How Are you? Testing testing 123.',
       isStale: false,
-      expanded: true
+      expanded: true,
+      visible: true
     }
   },
   methods: {
@@ -147,6 +148,9 @@ export default {
       // if( parsedMessage.event != 'comment-added' ) return
       // let payload = parsedMessage.comment
       // this.$store.commit( 'ADD_COMMENT', { payload } )
+    },
+    toggleVisibility( ) {
+      // TODO
     }
   },
   mounted() {

@@ -46,6 +46,10 @@ export default {
         this.layerMaterial.threeMeshMaterial.opacity = newValue.a
         this.layerMaterial.threeLineMaterial.opacity = newValue.a
         this.layerMaterial.threePointMaterial.opacity = newValue.a
+
+        if (typeof speckleRhinoPipeline != 'undefined') 
+          speckleRhinoPipeline.layerColorUpdate( JSON.stringify( { streamId: this.streamId, layerGuid: this.layerGuid, color: newValue.hex, opacity: newValue.a } ) )
+
       },
       deep: true
     },
