@@ -5,9 +5,9 @@
       {{ spklayer.name }} ({{spklayer.objectCount}} objs)
     </span>
     <span class="layer-buttons"> 
-      <md-icon xxxv-show='showPicker' @click.native='showColorPicker' :style='colorStyle'>color_lens</md-icon>
-      <!-- <md-icon>all_out</md-icon> -->
-      <md-icon @click.native='toggleLayer'>{{ visible ? "visibility" : "visibility_off" }}</md-icon>
+      <!-- <md-icon @click.native='showColorPicker'><md-tooltip>Bake Layer</md-tooltip>file_download</md-icon> -->
+      <md-icon ref='colorIcon' @click.native='showColorPicker' :style='colorStyle'><md-tooltip>Change color</md-tooltip>color_lens</md-icon>
+      <md-icon @click.native='toggleLayer'><md-tooltip>Toggle Visibility</md-tooltip>{{ visible ? "visibility" : "visibility_off" }}</md-icon>
     </span>
     </div>
   </div>
@@ -42,7 +42,8 @@ export default {
   },
   methods: {
     showColorPicker() {
-      // bus.$emit( 'show-color-picker', { layerGuid: this.spklayer.guid, streamId: this.streamid } )
+      // console.log( this.$refs.colorIcon.$el.getBoundingClientRect() )
+      bus.$emit( 'show-color-picker', { layerGuid: this.spklayer.guid, streamId: this.streamid, postion: this.$refs.colorIcon.$el.getBoundingClientRect() } )
     },
     toggleLayer() {
         this.visible = !this.visible
@@ -51,7 +52,6 @@ export default {
             var layerData = { streamId: this.streamid, guid: this.spklayer.guid, visibility: this.visible }
             speckleRhinoPipeline.layerVisibilityUpdate(JSON.stringify(layerData));
         }
-      
     }
   }, 
   mounted() {

@@ -5,15 +5,18 @@
   "author": "didimitrie <didimitrie@gmail.com>",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "debounce": "^1.0.2",
     "event-emitter-es6": "^1.1.5",
     "moment": "^2.18.1",
     "three": "^0.86.0",
     "vue": "2.2.1",
+    "vue-color": "^2.2.0",
+    "vue-dragging": "^1.0.6",
     "vue-material": "^0.7.1",
     "vuex": "^2.3.1"
   },
