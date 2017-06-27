@@ -41,6 +41,12 @@ namespace SpeckleRhino
         [JsonProperty("visibility")]
         public bool Visible { get; set; }
 
+        [JsonProperty("color")]
+        public SpeckleColor Color { get; set; }
+
+        [JsonProperty("opacity")]
+        public float Opacity { get; set; }
+
         public SpeckleLayerData() { }
 
     }

@@ -47,11 +47,8 @@ export default {
     },
     toggleLayer() {
         this.visible = !this.visible
-        //console.log(this.visible);
-        if (typeof speckleRhinoPipeline != 'undefined') {
-            var layerData = { streamId: this.streamid, guid: this.spklayer.guid, visibility: this.visible }
-            speckleRhinoPipeline.layerVisibilityUpdate(JSON.stringify(layerData));
-        }
+        if (typeof speckleRhinoPipeline != 'undefined')
+                speckleRhinoPipeline.layerVisibilityUpdate(JSON.stringify({ streamId: this.streamid, guid: this.spklayer.guid, visibility: this.visible }))
     }
   }, 
   mounted() {
