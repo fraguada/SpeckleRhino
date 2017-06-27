@@ -34,6 +34,7 @@
     <Content Include="src\components\NewReceiver.vue" />
     <Content Include="src\components\NewReceiver.vue.backup" />
     <Content Include="src\components\ReceiverList.vue" />
+    <Content Include="src\components\SpeckleColourPanel.vue" />
     <Content Include="src\components\SpeckleReceiver.vue" />
     <Content Include="src\components\SpeckleReceiver.vue.backup" />
     <Content Include="src\components\SpeckleReceiverComments.vue" />

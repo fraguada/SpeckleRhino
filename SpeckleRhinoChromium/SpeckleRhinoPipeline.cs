@@ -81,24 +81,30 @@ namespace SpeckleRhino
             // todo: update layers (that's the only thing we're interested in in this update
         }
 
-        public void layerColorUpdate( string data )
-        {
-            var deserialisedArgs = JsonConvert.DeserializeObject(data);
-            //data = { streamId, layerGuid, color, opacity }
-        }
+
 
         public void streamVisibilityUpdate(string streamId)
         {
             // toggles a whole layer off
         }
 
-        public void layerVisibilityUpdate(string layerData)
+        public void layerVisibilityUpdate(string data)
         {
-            var deserializedLayerData = JsonConvert.DeserializeObject<SpeckleLayerData>(layerData);
+            var deserializedData = JsonConvert.DeserializeObject<SpeckleLayerData>(data);
 
-            if (_viewModel.Model.Receivers.Any(R => R.Id == deserializedLayerData.StreamId))
+            if (_viewModel.Model.Receivers.Any(R => R.Id == deserializedData.StreamId))
             {
-                _viewModel.Model.Receivers.First(R => R.Id == deserializedLayerData.StreamId).LayerVisibilityUpdate(deserializedLayerData);
+                _viewModel.Model.Receivers.First(R => R.Id == deserializedData.StreamId).LayerVisibilityUpdate(deserializedData);
+            }
+        }
+        public void layerColorUpdate(string data)
+        {
+            var deserializedData = JsonConvert.DeserializeObject<SpeckleLayerData>(data);
+            //data = { streamId, layerGuid, color, opacity }
+
+            if (_viewModel.Model.Receivers.Any(R => R.Id == deserializedData.StreamId))
+            {
+                _viewModel.Model.Receivers.First(R => R.Id == deserializedData.StreamId).LayerColorUpdate(deserializedData);
             }
         }
     }

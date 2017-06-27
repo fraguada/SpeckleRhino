@@ -299,6 +299,29 @@ namespace SpeckleRhino
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="deserializedLayerData"></param>
+        public void LayerColorUpdate(SpeckleLayerData deserializedLayerData)
+        {
+            SpeckleLayer updatedLayer = SpeckleLayers.Find(sl => sl.Id == deserializedLayerData.Id);
+
+            var layerIndex =  Rhino.RhinoDoc.ActiveDoc.Layers.Find(updatedLayer.Id,true);
+
+            var layer = Rhino.RhinoDoc.ActiveDoc.Layers[layerIndex];
+            layer.Color = deserializedLayerData.Color.ToColor();
+            layer.CommitChanges();
+
+            for (int i = updatedLayer.StartIndex; i < updatedLayer.StartIndex + updatedLayer.ObjectCount; i++)
+            {
+                LayerColors[i] = deserializedLayerData.Color.ToColor();
+
+            }
+
+            DisplayContents();
+        }
+
+        /// <summary>
         /// Display the contents of the stream in a display conduit.
         /// </summary>
         public void DisplayContents()
