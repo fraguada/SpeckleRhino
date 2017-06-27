@@ -72,7 +72,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .paddedcard {
   margin-top: 5px; margin-bottom:5px; width:90%; left: 5%; overflow:hidden;
 }

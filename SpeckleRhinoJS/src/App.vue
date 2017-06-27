@@ -30,25 +30,29 @@
         <md-tooltip md-direction="bottom">New Sender</md-tooltip>
       </md-button>
       </md-speed-dial>
+    
     <transition name="fade">
       <new-receiver v-show='createNewAccount===true' v-on:close='createNewAccount=false'></new-receiver>
     </transition>
+    
     <receiver-list></receiver-list>
-
+    <speckle-colour-panel></speckle-colour-panel>
   </div>
 </template>
 
 <script>
-import AccountList      from './components/AccountList.vue'
-import ReceiverList     from './components/ReceiverList.vue'
-import NewReceiver      from './components/NewReceiver.vue'
+import AccountList          from './components/AccountList.vue'
+import ReceiverList         from './components/ReceiverList.vue'
+import NewReceiver          from './components/NewReceiver.vue'
+import SpeckleColourPanel   from './components/SpeckleColourPanel.vue'
 
 export default {
   name: 'app',
   components: {
     AccountList,
     ReceiverList,
-    NewReceiver
+    NewReceiver,
+    SpeckleColourPanel
   },
   data () {
     return {
@@ -73,18 +77,21 @@ export default {
 </script>
 
 <style>
-#app {
-  box-sizing: border-box;
-  background-color: #E6E6E6;
-}
-.accounts-tab .md-sidenav-content{
-  background-color: #E6E6E6;
-}
+  body{
+    overflow-y: scroll;
+  }
+  #app {
+    box-sizing: border-box;
+    background-color: #E6E6E6;
+  }
+  .accounts-tab .md-sidenav-content{
+    background-color: #E6E6E6;
+  }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0
-}
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0
+  }
 </style>

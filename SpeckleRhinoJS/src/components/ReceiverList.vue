@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class='paddedcard' style='position:relative;' v-show='receivers.length === 0'>
+    <div style='position:relative; padding: 20px' v-show='receivers.length === 0'>
         <div class="md-title">There are no clients to show.</div>
         <p>You can add a new client by click on the big plus button above.</p>
     </div>

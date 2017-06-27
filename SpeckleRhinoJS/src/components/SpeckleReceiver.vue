@@ -8,10 +8,11 @@
         </md-button>{{ spkreceiver.name }} 
       </span>
       <span class="md-caption"><code style="user-select:all">{{ spkreceiver.streamId }}</code></span>
+      <span class='option-buttons' style='float:right'>
+      <md-icon>visibility</md-icon>
+      <md-icon>close</md-icon>
+      </span>
       <br>
-      <md-button class='md-dense'>Pause</md-button>
-      <md-button class='md-dense md-warn'>Remove</md-button>
-
       <md-progress md-indeterminate v-show='showProgressBar' style='margin-bottom:20px;margin-top:20px;'></md-progress>
       <!-- <div class="md-caption"><br>ID: <code>{{ spkreceiver.streamId }}</code></div> -->
     </md-card-header>
@@ -62,7 +63,8 @@ export default {
       objListLength: 1,
       comments: 'Hello World. How Are you? Testing testing 123.',
       isStale: false,
-      expanded: true
+      expanded: true,
+      visible: true
     }
   },
   methods: {
@@ -81,14 +83,14 @@ export default {
         console.warn( err )
       })
     },
-    receiverReady( name, layers, objects, objectProperties ) {
+    receiverReady( name, layers, objects, history, layerMaterials ) {
       console.info('Receiver ready', this.spkreceiver.streamId )
       this.getComments() 
       this.showProgressBar = false
       this.objLoadProgress = 0
       this.objListLength = objects.length
 
-      let payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers, objects: objects }
+      let payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers, objects: objects, layerMaterials: layerMaterials }
       this.$store.commit( 'INIT_RECEIVER_DATA',  { payload } )
   
       this.isStale = true
@@ -146,6 +148,9 @@ export default {
       // if( parsedMessage.event != 'comment-added' ) return
       // let payload = parsedMessage.comment
       // this.$store.commit( 'ADD_COMMENT', { payload } )
+    },
+    toggleVisibility( ) {
+      // TODO
     }
   },
   mounted() {
@@ -168,6 +173,9 @@ export default {
 </script>
 
 <style>
+.option-buttons {
+  color: #808080 !important;
+}
 .line-height-adjustment{
   line-height: 34px;
 }
