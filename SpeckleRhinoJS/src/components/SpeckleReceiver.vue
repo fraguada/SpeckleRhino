@@ -112,9 +112,10 @@ export default {
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
 
-        if( typeof speckleRhinoPipeline != 'undefined' ) 
-            speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
-
+          if (typeof speckleRhinoPipeline != 'undefined') {
+              window.location.assign('hello')
+              speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
+          }
       })
     },
     metadataUpdate( name, layers ) {

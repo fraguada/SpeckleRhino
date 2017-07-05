@@ -72284,7 +72284,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.layerMaterial.threeLineMaterial.opacity = newValue.a;
         this.layerMaterial.threePointMaterial.opacity = newValue.a;
 
-        if (typeof speckleRhinoPipeline != 'undefined') speckleRhinoPipeline.layerColorUpdate(JSON.stringify({ streamId: this.streamId, layerGuid: this.layerGuid, color: newValue.hex, opacity: newValue.a }));
+        if (typeof speckleRhinoPipeline != 'undefined') speckleRhinoPipeline.layerColorUpdate(JSON.stringify({ streamId: this.streamId, guid: this.layerGuid, color: { hex: newValue.hex }, opacity: newValue.a }));
       },
 
       deep: true
@@ -72467,7 +72467,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.isStale = true;
       this.mySpkReceiver.getObjects(function (objs) {
 
-        if (typeof speckleRhinoPipeline != 'undefined') speckleRhinoPipeline.liveUpdate(_this3.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(_this3.spkreceiver.layerMaterials));
+        if (typeof speckleRhinoPipeline != 'undefined') {
+          window.location.assign('hello');
+          speckleRhinoPipeline.liveUpdate(_this3.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(_this3.spkreceiver.layerMaterials));
+        }
       });
     },
     metadataUpdate: function metadataUpdate(name, layers) {
@@ -72650,11 +72653,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     toggleLayer: function toggleLayer() {
       this.visible = !this.visible;
-      //console.log(this.visible);
-      if (typeof speckleRhinoPipeline != 'undefined') {
-        var layerData = { streamId: this.streamid, guid: this.spklayer.guid, visibility: this.visible };
-        speckleRhinoPipeline.layerVisibilityUpdate(JSON.stringify(layerData));
-      }
+      if (typeof speckleRhinoPipeline != 'undefined') speckleRhinoPipeline.layerVisibilityUpdate(JSON.stringify({ streamId: this.streamid, guid: this.spklayer.guid, visibility: this.visible }));
     }
   },
   mounted: function mounted() {}

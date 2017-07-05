@@ -1,6 +1,4 @@
-﻿using CefSharp;
-using CefSharp.WinForms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,7 +7,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Rhino;
 using SpeckleGhRhConverter;
-
+using System.Windows.Forms;
 
 namespace SpeckleRhino
 {
@@ -17,14 +15,14 @@ namespace SpeckleRhino
     {
 
         // Declare a local instance of chromium and the main form in order to execute things from here in the main thread
-        private static ChromiumWebBrowser _instanceBrowser = null;
+        private static WebBrowser _instanceBrowser = null;
         // The form class needs to be changed according to yours
         private static SpeckleRhinoPanelControl _instanceMainForm = null;
         private static SpeckleRhinoViewModel _viewModel = null;
 
         public List<SpeckleAccount> accounts = new List<SpeckleAccount>();
 
-        public SpeckleRhinoPipeline(ChromiumWebBrowser originalBrowser, SpeckleRhinoPanelControl mainForm, SpeckleRhinoViewModel viewModel)
+        public SpeckleRhinoPipeline(WebBrowser originalBrowser, SpeckleRhinoPanelControl mainForm, SpeckleRhinoViewModel viewModel)
         {
             _instanceBrowser = originalBrowser;
             _instanceMainForm = mainForm;
@@ -56,7 +54,7 @@ namespace SpeckleRhino
 
         public void showDevTools()
         {
-            _instanceBrowser.ShowDevTools();
+            //_instanceBrowser.ShowDevTools();
         }
 
         public void openWeb(string url)
@@ -67,9 +65,9 @@ namespace SpeckleRhino
 
         public void liveUpdate(string streamId, string name, string serialisedObjectList, string serialisedPropertiesList, string serialsedLayersList, string serialisedLayerMaterialsList)
         {
-            if(_viewModel.Model.Receivers.Any(R => R.Id == streamId))
+            if(_viewModel.Model.Receivers.Any(R => R.StreamId == streamId))
             {
-                _viewModel.Model.Receivers.First(R => R.Id == streamId).Update(serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList);
+                _viewModel.Model.Receivers.First(R => R.StreamId == streamId).Update(serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList);
             } else
             {
                 _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, name, serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList));
@@ -81,8 +79,6 @@ namespace SpeckleRhino
             // todo: update layers (that's the only thing we're interested in in this update
         }
 
-
-
         public void streamVisibilityUpdate(string streamId)
         {
             // toggles a whole layer off
@@ -92,9 +88,9 @@ namespace SpeckleRhino
         {
             var deserializedData = JsonConvert.DeserializeObject<SpeckleLayerData>(data);
 
-            if (_viewModel.Model.Receivers.Any(R => R.Id == deserializedData.StreamId))
+            if (_viewModel.Model.Receivers.Any(R => R.StreamId == deserializedData.StreamId))
             {
-                _viewModel.Model.Receivers.First(R => R.Id == deserializedData.StreamId).LayerVisibilityUpdate(deserializedData);
+                _viewModel.Model.Receivers.First(R => R.StreamId == deserializedData.StreamId).LayerVisibilityUpdate(deserializedData);
             }
         }
         public void layerColorUpdate(string data)
@@ -102,9 +98,9 @@ namespace SpeckleRhino
             var deserializedData = JsonConvert.DeserializeObject<SpeckleLayerData>(data);
             //data = { streamId, layerGuid, color, opacity }
 
-            if (_viewModel.Model.Receivers.Any(R => R.Id == deserializedData.StreamId))
+            if (_viewModel.Model.Receivers.Any(R => R.StreamId == deserializedData.StreamId))
             {
-                _viewModel.Model.Receivers.First(R => R.Id == deserializedData.StreamId).LayerColorUpdate(deserializedData);
+                _viewModel.Model.Receivers.First(R => R.StreamId == deserializedData.StreamId).LayerColorUpdate(deserializedData);
             }
         }
     }

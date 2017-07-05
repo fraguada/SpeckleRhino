@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using CefSharp;
-using CefSharp.WinForms;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
@@ -11,8 +9,10 @@ namespace SpeckleRhino
     [System.Runtime.InteropServices.Guid("041397A5-BB8B-4FCA-B580-1E6A7F0B2137")]
     public partial class SpeckleRhinoPanelControl : UserControl
     {
-        private ChromiumWebBrowser m_browser;
+
         private SpeckleRhinoViewModel m_viewModel;
+
+        private WebBrowser m_webBrowser;
 
         /// <summary>
         /// Returns the ID of this panel.
@@ -33,113 +33,51 @@ namespace SpeckleRhino
             m_viewModel = new SpeckleRhinoViewModel();
             SpeckleRhinoPlugIn.Instance.ViewModel = m_viewModel;
 
-            m_browser.RegisterJsObject("speckleRhinoPipeline", new SpeckleRhinoPipeline(m_browser, this, m_viewModel));
+            //m_browser.RegisterJsObject("speckleRhinoPipeline", new SpeckleRhinoPipeline(m_browser, this, m_viewModel));
 
             SpeckleRhinoPlugIn.Instance.UserControl = this;
 
-            m_browser.LoadingStateChanged += OnLoadingStateChanged;
-            m_browser.ConsoleMessage += OnBrowserConsoleMessage;
-            m_browser.StatusMessage += OnBrowserStatusMessage;
-            m_browser.TitleChanged += OnBrowserTitleChanged;
-            m_browser.AddressChanged += OnBrowserAddressChanged;
             this.Disposed += new EventHandler(OnDisposed);
-        }
-
-        private void OnBrowserAddressChanged(object sender, AddressChangedEventArgs e)
-        {
-#if DEBUG
-            Debug.WriteLine("\nSpeckle for Rhino: Browser Address Changed. \nBrowser: {0}, Address: {1}", e.Browser, e.Address);
-#endif
-        }
-
-        private void OnBrowserTitleChanged(object sender, TitleChangedEventArgs e)
-        {
-#if DEBUG
-            Debug.WriteLine("\nSpeckle for Rhino: Browser Title Changed. \nTitle: {0}", e.Title);
-#endif
-        }
-
-        private void OnBrowserStatusMessage(object sender, StatusMessageEventArgs e)
-        {
-#if DEBUG
-            Debug.WriteLine("\nSpeckle for Rhino: Browser Status Message Changed. \nBrowser: {0}, Value: {1}", e.Browser, e.Value);
-#endif
-        }
-
-        private void OnBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
-        {
-#if DEBUG
-            Debug.WriteLine("\nSpeckle for Rhino: Browser Console Message Changed. \nLine: {0}, Message: {1}, Source: {2}", e.Line, e.Message, e.Source);
-#endif
-        }
-
-        private void OnLoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
-        {
-#if DEBUG
-            Debug.WriteLine("\nSpeckle for Rhino: Loading State Changed. \nBrowser: {0}, Is Loading: {1}", e.Browser, e.IsLoading);
-            if (!e.IsLoading)
-                Debug.WriteLine("\nSpeckle for Rhino: Should probably connect to Speckle.");
-#endif
         }
 
         private void InitializeBrowser()
         {
+            m_webBrowser = new WebBrowser();
 
-            if (!Cef.IsInitialized)
-            {
+            m_webBrowser.DocumentCompleted += OnDocumentLoaded;
+            m_webBrowser.Navigating += OnDocumentLoading;
 
-                var settings = new CefSettings();
+            //do we need to listen fr any other events?
 
-                // Increase the log severity so CEF outputs detailed information, useful for debugging
-                settings.LogSeverity = LogSeverity.Verbose;
-                // By default CEF uses an in memory cache, to save cached data e.g. passwords you need to specify a cache path
-                // NOTE: The executing user must have sufficient privileges to write to this folder.
-                settings.CachePath = "cache";
-                settings.RemoteDebuggingPort = 7070;
-
-                string assemblyLocation = Assembly.GetExecutingAssembly().Location;
-                string assemblyPath = Path.GetDirectoryName(assemblyLocation);
-                string pathSubprocess = Path.Combine(assemblyPath, "CefSharp.BrowserSubprocess.exe");
-
-                settings.BrowserSubprocessPath = pathSubprocess;
-
-                Cef.EnableHighDPISupport();
-                Cef.Initialize(settings);
-
-            }
-            else
-            {
-                Rhino.RhinoApp.WriteLine("Speckle for Rhino: Warning.  CefSharp has already been initialized by another plugin.  This may cause issues.");
-            }
-
+#if Dimitrie
+            m_webBrowser.Url = new Uri(@"http://10.211.55.2:9090/");
+#elif Luis
+            m_webBrowser.Url = new Uri(@"http://localhost:9090/");
+#else 
             var path = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
 
-            string page = string.Format(@"{0}\app\index.html", path);
+            var indexPath = string.Format(@"{0}\app\index.html", path);
 
-            if (!File.Exists(page))
-                Rhino.RhinoApp.WriteLine("Speckle for Rhino: Error. The html file doesn't exists : {0}", page);
+            if (!File.Exists(indexPath))
+                Rhino.RhinoApp.WriteLine("Speckle for Rhino: Error. The html file doesn't exists : {0}", indexPath);
 
-            // as debug strategy: npm run dev speckleRhinoJs
-            // open "localhost:9090" instead of the built page, strange addres below has to do with me running win on parallels and the js on osx
-#if Dimitrie
-            m_browser = new ChromiumWebBrowser(@"http://10.211.55.2:9090/");
-#elif Luis
-            m_browser = new ChromiumWebBrowser(@"http://localhost:9090/");
-#else 
-            m_browser = new ChromiumWebBrowser(page);
-#endif
-            toolStripContainer.ContentPanel.Controls.Add(m_browser);
-            m_browser.Dock = DockStyle.Fill;
+            var url = indexPath.Replace("\\", "/");
 
-            // Allow the use of local resources in the browser
-            BrowserSettings browserSettings = new BrowserSettings();
-            browserSettings.FileAccessFromFileUrls = CefState.Enabled;
-            browserSettings.UniversalAccessFromFileUrls = CefState.Enabled;
-            m_browser.BrowserSettings = browserSettings;
+            m_webBrowser.Url = new Uri(url);
+#endif 
+            toolStripContainer.ContentPanel.Controls.Add(m_webBrowser);
+            m_webBrowser.Dock = DockStyle.Fill;
 
-            //m_browser.Enabled = true;
-            //m_browser.Show();
+        }
 
+        private void OnDocumentLoading(object sender, WebBrowserNavigatingEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        private void OnDocumentLoaded(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -148,8 +86,8 @@ namespace SpeckleRhino
         /// </summary>
         private void OnDisposed(object sender, EventArgs e)
         {
-            m_browser.Dispose();
-            Cef.Shutdown();
+            m_webBrowser.Dispose();
+
             SpeckleRhinoPlugIn.Instance.UserControl = null;
         }
     }

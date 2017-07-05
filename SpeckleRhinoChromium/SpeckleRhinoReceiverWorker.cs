@@ -22,15 +22,6 @@ namespace SpeckleRhino
     {
 
         #region Members
-        /// <summary>
-        /// The streamId for the receiver.
-        /// </summary>
-        public string Id { get; private set; }
-
-        /// <summary>
-        /// The stream Name.
-        /// </summary>
-        public string Name { get; private set; }
 
         /// <summary>
         /// The Display Conduit for showing stream objects and their status.
@@ -103,10 +94,11 @@ namespace SpeckleRhino
         /// <param name="serializedPropertiesList">The object properties coming from the stream.</param>
         /// <param name="serializedLayersList">The layer data coming from the stream.</param>
         /// <param name="serializedLayerMaterialsList">The layer material data coming from the stream.</param>
-        public SpeckleRhinoReceiverWorker(string id, string name, string serializedObjectList, string serializedPropertiesList, string serializedLayersList, string serializedLayerMaterialsList) : this()
+        public SpeckleRhinoReceiverWorker(string streamId, string name, string serializedObjectList, string serializedPropertiesList, string serializedLayersList, string serializedLayerMaterialsList) : this()
         {
-            Id = id;
+            StreamId = streamId;
             Name = name;
+            //add Uuid = uuid;
             Geometry = new List<GeometryBase>();
             Ids = new List<Guid>();
             Update(serializedObjectList, serializedPropertiesList, serializedLayersList, serializedLayerMaterialsList);
@@ -120,8 +112,6 @@ namespace SpeckleRhino
         {
             throw new NotImplementedException();
         }
-
-
 
         /// <summary>
         /// Create the layers in the Rhino Document associated with this stream.
@@ -137,11 +127,11 @@ namespace SpeckleRhino
             SpeckleLayers = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayers);
             var layerMaterialsList = JsonConvert.DeserializeObject<List<SpeckleLayerMaterial>>(serializedLayerMaterials);
 
-            ParentLayerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + Id + "]", true);
+            ParentLayerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + this.StreamId + "]", true);
 
             if (ParentLayerId == -1)
             {
-                var layer = new Layer() { Name = this.Name + "_[" + Id + "]" };
+                var layer = new Layer() { Name = this.Name + "_[" + this.StreamId + "]" };
                 ParentLayerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
             }
             else
@@ -153,7 +143,7 @@ namespace SpeckleRhino
 
             foreach(var speckleLayer in SpeckleLayers)
             {
-                var layerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + Id + "]" + "::" + speckleLayer.Name, true);
+                var layerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + this.StreamId + "]" + "::" + speckleLayer.Name, true);
                 var layerMaterial = layerMaterialsList.Find(lm => lm.Id == speckleLayer.Id);
                 if (layerId == -1)
                 {

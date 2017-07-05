@@ -7,18 +7,43 @@ using System.Threading.Tasks;
 namespace SpeckleRhino
 {
 
-  public interface ISpeckleRhinoWorker { }
-  public class SpeckleRhinoWorker : ISpeckleRhinoWorker
-  {
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface ISpeckleRhinoWorker { }
 
-    public Guid Uuid { get; private set; }
-
-    public string Type { get; set; }
-
-    public SpeckleRhinoWorker()
+    /// <summary>
+    /// Abstract SpeckleRhinoWorker class which contains generic members for both Senders and Receivers.
+    /// </summary>
+    public abstract class SpeckleRhinoWorker : ISpeckleRhinoWorker
     {
-      Uuid = Guid.NewGuid();
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Guid Uuid { get; set; }
 
-  }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string StreamId { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Type { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public SpeckleRhinoWorker()
+        {
+
+        }
+
+    }
 }
