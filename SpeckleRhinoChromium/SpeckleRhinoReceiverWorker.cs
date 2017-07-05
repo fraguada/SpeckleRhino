@@ -104,6 +104,20 @@ namespace SpeckleRhino
             Update(serializedObjectList, serializedPropertiesList, serializedLayersList, serializedLayerMaterialsList);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="streamId"></param>
+        public SpeckleRhinoReceiverWorker(string streamId)
+        {
+            StreamId = streamId;
+        }
+
+        public SpeckleRhinoReceiverWorker(string streamId, string name) : this(streamId)
+        {
+            Name = name;
+        }
+
         #endregion Constructors
 
         #region Methods
@@ -165,6 +179,22 @@ namespace SpeckleRhino
                 }
             }
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void GetMetadataUpdate()
+        {
+            Debug.WriteLine("TODO: GetMetadataUpdate!", "SpeckleRhino");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void GetLiveUpdate()
+        {
+            Debug.WriteLine("TODO: GetLiveUpdate!","SpeckleRhino");
         }
 
         /// <summary>
@@ -276,6 +306,7 @@ namespace SpeckleRhino
         {
 
             //Debug.WriteLine("SpeckleRhino: received LayerVis update.  Vis: {0}", deserializedLayerData.Visible);
+            if (SpeckleLayers == null) return;
 
             SpeckleLayer updatedLayer = SpeckleLayers.Find(sl => sl.Id == deserializedLayerData.Id);
 
@@ -294,6 +325,9 @@ namespace SpeckleRhino
         /// <param name="deserializedLayerData"></param>
         public void LayerColorUpdate(SpeckleLayerData deserializedLayerData)
         {
+
+            if (SpeckleLayers == null) return;
+
             SpeckleLayer updatedLayer = SpeckleLayers.Find(sl => sl.Id == deserializedLayerData.Id);
 
             var layerIndex =  Rhino.RhinoDoc.ActiveDoc.Layers.Find(updatedLayer.Id,true);

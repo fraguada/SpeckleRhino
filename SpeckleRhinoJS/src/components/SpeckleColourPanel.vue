@@ -17,7 +17,7 @@
 import { Chrome, Compact, Slider }  from 'vue-color'
 import * as THREE                   from 'three'
 import debounce                     from 'debounce'
-
+import SpkApi                       from '../store/Api'
 export default {
   name: '',
   components: {
@@ -47,8 +47,7 @@ export default {
         this.layerMaterial.threeLineMaterial.opacity = newValue.a
         this.layerMaterial.threePointMaterial.opacity = newValue.a
 
-        if (typeof speckleRhinoPipeline != 'undefined')
-                speckleRhinoPipeline.layerColorUpdate(JSON.stringify({ streamId: this.streamId, guid: this.layerGuid, color: { hex: newValue.hex }, opacity: newValue.a }))
+        SpkApi.layerColorUpdate({ streamId: this.streamId, guid: this.layerGuid, color: newValue.hex.substr(1), opacity: newValue.a });
       },
       deep: true
     },

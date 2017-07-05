@@ -42,38 +42,10 @@ namespace SpeckleRhino
 
         }
 
-        public string getAccounts()
-        {
-            return JsonConvert.SerializeObject(accounts);
-        }
-
-        public void saveNewAccount(string email, string apiToken, string serverName, string restApi, string rootUrl)
-        {
-            Debug.WriteLine("Hello world");
-        }
-
-        public void showDevTools()
-        {
-            //_instanceBrowser.ShowDevTools();
-        }
-
-        public void openWeb(string url)
-        {
-            ProcessStartInfo start = new ProcessStartInfo(url);
-            Process.Start(start);
-        }
-
-        public void liveUpdate(string streamId, string name, string serialisedObjectList, string serialisedPropertiesList, string serialsedLayersList, string serialisedLayerMaterialsList)
-        {
-            if(_viewModel.Model.Receivers.Any(R => R.StreamId == streamId))
-            {
-                _viewModel.Model.Receivers.First(R => R.StreamId == streamId).Update(serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList);
-            } else
-            {
-                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, name, serialisedObjectList, serialisedPropertiesList, serialsedLayersList, serialisedLayerMaterialsList));
-            }
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri"></param>
         public void ParseUri(Uri uri)
         {
             Debug.WriteLine("Uri: " + uri.ToString(), "SpeckleRhino");
@@ -81,18 +53,85 @@ namespace SpeckleRhino
             Debug.WriteLine("Action: " + uri.Host, "SpeckleRhino");
             Debug.WriteLine("Parameters: " + uri.AbsolutePath, "SpeckleRhino");
 
-            string incomingStringId = uri.Scheme;
+            string incomingStreamId = uri.Scheme;
             string incomingAction = uri.Host;
-            string[] incomingParameters = uri.AbsolutePath.Substring(1, uri.AbsolutePath.Length-1).Split('/');
+            string[] incomingParameters = uri.AbsolutePath.Substring(1, uri.AbsolutePath.Length - 1).Split('/');
 
             switch (incomingAction)
             {
                 case "togglelayer":
-                    var data = new SpeckleLayerData() { StreamId = incomingStringId, Id = Guid.Parse(incomingParameters[0]), Visible = bool.Parse(incomingParameters[1]) };
-                    layerVisibilityUpdate(data);
+                    var dataToggleLayer = new SpeckleLayerData() { StreamId = incomingStreamId, Id = Guid.Parse(incomingParameters[0]), Visible = bool.Parse(incomingParameters[1]) };
+                    layerVisibilityUpdate(dataToggleLayer);
+                    break;
+
+                case "layercolorupdate":
+                    var dataLayerColorUpdate = new SpeckleLayerData() { StreamId = incomingStreamId, Id = Guid.Parse(incomingParameters[0]), Color = new SpeckleColor() { Hex = incomingParameters[1] }, Opacity = float.Parse(incomingParameters[2]) };
+                    layerColorUpdate(dataLayerColorUpdate);
+                    break;
+
+                case "liveupdate":
+                    liveUpdate(incomingStreamId);
+                    break;
+
+                case "metadataupdate":
+                    metadataUpdate(incomingStreamId);
+                    break;
+
+                case "receiverready":
+                    receiverReady(incomingStreamId, incomingParameters[0]);
+                    break;
+
+                default:
+                    Debug.WriteLine("Action not implemented", "SpeckleRhino");
                     break;
             }
+
+        }
+
+        public string getAccounts()
+        {
+            return JsonConvert.SerializeObject(accounts);
+        }
+
+        public void saveNewAccount(string email, string apiToken, string serverName, string restApi, string rootUrl)
+        {
+            Debug.WriteLine("Hello world", "Speckle Rhino");
+        }
+
+        public void showDevTools()
+        {
+            //_instanceBrowser.ShowDevTools();
+            //in case we want firebug lite: https://stackoverflow.com/questions/12693444/embedded-webbrowser-web-console-access
+        }
+
+        public void openWeb(string url)
+        {
+            //ProcessStartInfo start = new ProcessStartInfo(url);
+            //Process.Start(start);
             
+        }
+
+        public void receiverReady(string streamId, string name)
+        {
+            if (!_viewModel.Model.Receivers.Any(R => R.StreamId == streamId))
+            {
+                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, name));
+                _viewModel.Model.Receivers.First(R => R.StreamId == streamId).GetLiveUpdate();
+            }
+   
+        }
+
+        public void liveUpdate(string streamId)
+        {
+            if (_viewModel.Model.Receivers.Any(R => R.StreamId == streamId))
+            {
+                _viewModel.Model.Receivers.First(R => R.StreamId == streamId).GetLiveUpdate();
+            }
+            else
+            {
+                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId));
+                _viewModel.Model.Receivers.First(R => R.StreamId == streamId).GetLiveUpdate();
+            }
         }
 
         public void metadataUpdate(string streamId, string name, string serialisedLayerList)
@@ -100,23 +139,22 @@ namespace SpeckleRhino
             // todo: update layers (that's the only thing we're interested in in this update
         }
 
-        public void streamVisibilityUpdate(string streamId)
+        private void metadataUpdate(string streamId)
         {
-            // toggles a whole layer off
-        }
-
-        public void layerVisibilityUpdate(string data)
-        {
-            var deserializedData = JsonConvert.DeserializeObject<SpeckleLayerData>(data);
-
-            if (_viewModel.Model.Receivers.Any(R => R.StreamId == deserializedData.StreamId))
+            if (_viewModel.Model.Receivers.Any(R => R.StreamId == streamId))
             {
-                _viewModel.Model.Receivers.First(R => R.StreamId == deserializedData.StreamId).LayerVisibilityUpdate(deserializedData);
+                _viewModel.Model.Receivers.First(R => R.StreamId == streamId).GetMetadataUpdate();
             }
             else
             {
-                Debug.WriteLine("Stream not found", "SpeckleRhino");
+                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId));
+                _viewModel.Model.Receivers.First(R => R.StreamId == streamId).GetMetadataUpdate();
             }
+        }
+
+        public void streamVisibilityUpdate(string streamId)
+        {
+            // toggles a whole layer off
         }
 
         public void layerVisibilityUpdate(SpeckleLayerData data)
@@ -132,15 +170,15 @@ namespace SpeckleRhino
             }
         }
 
-
-        public void layerColorUpdate(string data)
+        public void layerColorUpdate(SpeckleLayerData data)
         {
-            var deserializedData = JsonConvert.DeserializeObject<SpeckleLayerData>(data);
-            //data = { streamId, layerGuid, color, opacity }
-
-            if (_viewModel.Model.Receivers.Any(R => R.StreamId == deserializedData.StreamId))
+            if (_viewModel.Model.Receivers.Any(R => R.StreamId == data.StreamId))
             {
-                _viewModel.Model.Receivers.First(R => R.StreamId == deserializedData.StreamId).LayerColorUpdate(deserializedData);
+                _viewModel.Model.Receivers.First(R => R.StreamId == data.StreamId).LayerColorUpdate(data);
+            }
+            else
+            {
+                Debug.WriteLine("Stream not found", "SpeckleRhino");
             }
         }
     }

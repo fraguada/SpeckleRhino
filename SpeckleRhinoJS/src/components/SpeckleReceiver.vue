@@ -40,6 +40,7 @@
 import ReceiverClient             from '../receiver/SpeckleReceiver' // temporary solution to fix uglify error on build.
 import SpeckleReceiverComments    from './SpeckleReceiverComments.vue'
 import SpeckleReceiverLayer       from './SpeckleReceiverLayer.vue' 
+import SpkApi                     from '../store/Api'
 
 export default {
   name: 'SpeckleReceiver',
@@ -96,9 +97,10 @@ export default {
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
 
-          if (typeof speckleRhinoPipeline != 'undefined')
-              speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(this.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
+         // if (typeof speckleRhinoPipeline != 'undefined')
+         //     speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(this.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
 
+          SpkApi.receiverReady({ streamId: this.spkreceiver.streamId, name: name});
       })
     },
     liveUpdate( name, layers, objects, objectProperties ) {
@@ -112,18 +114,21 @@ export default {
       this.isStale = true
       this.mySpkReceiver.getObjects( ( objs ) => {
 
-          if (typeof speckleRhinoPipeline != 'undefined') {
-              window.location.assign('hello')
-              speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
-          }
+      //    if (typeof speckleRhinoPipeline != 'undefined')             
+      //        speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
+
+          SpkApi.liveUpdate({ streamId: this.spkreceiver.streamId });
+
       })
     },
     metadataUpdate( name, layers ) {
       console.info('Metadata update', this.spkreceiver.streamId )
       let payload = { streamId: this.spkreceiver.streamId, name: name, layers: layers }
       this.$store.commit( 'SET_RECEIVER_METADATA',  { payload } )
-      if( typeof speckleRhinoPipeline != 'undefined' ) 
-        speckleRhinoPipeline.metadataUpdate( name, JSON.stringify( layers ) )
+      //if( typeof speckleRhinoPipeline != 'undefined' ) 
+       //   speckleRhinoPipeline.metadataUpdate(name, JSON.stringify(layers))
+
+      SpkApi.metadataUpdate({ streamId: this.spkreceiver.streamId, name: name, layers: layers });
     },
     objLoadProgressEv( loaded ) {
       this.objLoadProgress = ( loaded + 1 ) / this.objListLength * 100
