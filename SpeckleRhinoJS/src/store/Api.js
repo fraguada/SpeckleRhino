@@ -15,7 +15,7 @@ const _accounts = [ {
 } ]
 
 
-export default {
+let SpkApi = {
   getAccounts( cb ) {
       return typeof speckleRhinoPipeline != 'undefined' ? cb(JSON.parse(speckleRhinoPipeline.getAccounts() ) ) : cb( _accounts )
   },
@@ -24,5 +24,12 @@ export default {
   },
   getReceivers( cb ) {
     // return typeof speckleRhinoPipeline != 'undefined' ? cb( JSON.parse( speckleRhinoPipeline.getReceivers() ) ) : cb( _receivers )
+  },
+  toggleLayer(args) {
+      window.location.replace( args.streamId + '://' + 'togglelayer' + '/' + args.guid + '/' + args.visible )
   }
 }
+
+export default SpkApi
+
+window.SpkApi = SpkApi

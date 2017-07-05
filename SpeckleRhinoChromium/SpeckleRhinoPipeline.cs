@@ -74,6 +74,27 @@ namespace SpeckleRhino
             }
         }
 
+        public void ParseUri(Uri uri)
+        {
+            Debug.WriteLine("Uri: " + uri.ToString(), "SpeckleRhino");
+            Debug.WriteLine("StreamId: " + uri.Scheme, "SpeckleRhino");
+            Debug.WriteLine("Action: " + uri.Host, "SpeckleRhino");
+            Debug.WriteLine("Parameters: " + uri.AbsolutePath, "SpeckleRhino");
+
+            string incomingStringId = uri.Scheme;
+            string incomingAction = uri.Host;
+            string[] incomingParameters = uri.AbsolutePath.Substring(1, uri.AbsolutePath.Length-1).Split('/');
+
+            switch (incomingAction)
+            {
+                case "togglelayer":
+                    var data = new SpeckleLayerData() { StreamId = incomingStringId, Id = Guid.Parse(incomingParameters[0]), Visible = bool.Parse(incomingParameters[1]) };
+                    layerVisibilityUpdate(data);
+                    break;
+            }
+            
+        }
+
         public void metadataUpdate(string streamId, string name, string serialisedLayerList)
         {
             // todo: update layers (that's the only thing we're interested in in this update
@@ -92,7 +113,26 @@ namespace SpeckleRhino
             {
                 _viewModel.Model.Receivers.First(R => R.StreamId == deserializedData.StreamId).LayerVisibilityUpdate(deserializedData);
             }
+            else
+            {
+                Debug.WriteLine("Stream not found", "SpeckleRhino");
+            }
         }
+
+        public void layerVisibilityUpdate(SpeckleLayerData data)
+        {
+
+            if (_viewModel.Model.Receivers.Any(R => R.StreamId == data.StreamId))
+            {
+                _viewModel.Model.Receivers.First(R => R.StreamId == data.StreamId).LayerVisibilityUpdate(data);
+            }
+            else
+            {
+                Debug.WriteLine("Stream not found", "SpeckleRhino");
+            }
+        }
+
+
         public void layerColorUpdate(string data)
         {
             var deserializedData = JsonConvert.DeserializeObject<SpeckleLayerData>(data);

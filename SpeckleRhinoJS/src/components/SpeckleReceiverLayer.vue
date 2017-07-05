@@ -14,6 +14,9 @@
 </template>
 
 <script>
+
+    import SpkApi from "../store/Api";
+
 export default {
   name: 'SpkReceiverLayer',
   props: { 
@@ -48,7 +51,9 @@ export default {
     toggleLayer() {
         this.visible = !this.visible
         if (typeof speckleRhinoPipeline != 'undefined')
-                speckleRhinoPipeline.layerVisibilityUpdate(JSON.stringify({ streamId: this.streamid, guid: this.spklayer.guid, visibility: this.visible }))
+            speckleRhinoPipeline.layerVisibilityUpdate(JSON.stringify({ streamId: this.streamid, guid: this.spklayer.guid, visibility: this.visible }))
+
+        SpkApi.toggleLayer({ streamId: this.streamid, guid: this.spklayer.guid, visible: this.visible })
     }
   }, 
   mounted() {
