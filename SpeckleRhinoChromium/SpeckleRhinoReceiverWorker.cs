@@ -2,6 +2,7 @@
 using Rhino;
 using Rhino.DocObjects;
 using Rhino.Geometry;
+using SpeckleCommon;
 using SpeckleGhRhConverter;
 using System;
 using System.Collections.Generic;
@@ -73,6 +74,14 @@ namespace SpeckleRhino
         /// </summary>
         public List<bool> VisibleList { get; private set; }
 
+        public SpeckleReceiver Receiver { get; private set; }
+
+        public string ApiUrl { get; private set; }
+
+        public string Token { get; private set; }
+
+        public SpeckleConverter Converter { get; private set; }
+
         #endregion Members
 
         #region Constructors
@@ -118,9 +127,81 @@ namespace SpeckleRhino
             Name = name;
         }
 
+        public SpeckleRhinoReceiverWorker(string streamId, string name, string apiUrl, string token) : this(streamId, name)
+        {
+            ApiUrl = apiUrl;
+            Token = token;
+            Converter = new GhRhConveter();
+
+            Receiver = new SpeckleReceiver("https://" + ApiUrl + "/api/v1", Token, StreamId, Converter);
+            
+            registermyReceiverEvents();
+        }
+
         #endregion Constructors
 
         #region Methods
+
+        void registermyReceiverEvents()
+        {
+            if (Receiver == null) return;
+
+            Receiver.OnDataMessage += OnDataMessage;
+
+            Receiver.OnError += OnError;
+
+            Receiver.OnReady += OnReady;
+
+            Receiver.OnMetadata += OnMetadata;
+
+            Receiver.OnData += OnData;
+
+            Receiver.OnHistory += OnHistory;
+
+            Receiver.OnMessage += OnVolatileMessage;
+
+            Receiver.OnBroadcast += OnBroadcast;
+        }
+
+        private void OnBroadcast(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnBroadcast", "SpeckleRhino");
+        }
+
+        private void OnVolatileMessage(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnVolatileMessage", "SpeckleRhino");
+        }
+
+        private void OnHistory(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnHistory", "SpeckleRhino");
+        }
+
+        private void OnData(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnData", "SpeckleRhino");
+        }
+
+        private void OnMetadata(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnMetadataMessage", "SpeckleRhino");
+        }
+
+        private void OnReady(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnReady", "SpeckleRhino");
+        }
+
+        private void OnError(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnError " + e.EventInfo, "SpeckleRhino");
+        }
+
+        private void OnDataMessage(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnDataMessage", "SpeckleRhino");
+        }
 
         public bool Equals(SpeckleRhinoReceiverWorker other)
         {

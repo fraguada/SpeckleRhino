@@ -49,36 +49,36 @@ namespace SpeckleRhino
         public void ParseUri(Uri uri)
         {
             Debug.WriteLine("Uri: " + uri.ToString(), "SpeckleRhino");
-            Debug.WriteLine("StreamId: " + uri.Scheme, "SpeckleRhino");
             Debug.WriteLine("Action: " + uri.Host, "SpeckleRhino");
-            Debug.WriteLine("Parameters: " + uri.AbsolutePath, "SpeckleRhino");
 
-            string incomingStreamId = uri.Scheme;
+            var decodedParams = Convert.FromBase64String(uri.AbsolutePath.Substring(1, uri.AbsolutePath.Length - 1));
+            string decodedString = Encoding.UTF8.GetString(decodedParams);
+            string[] incomingParameters = decodedString.Split('/');
+
             string incomingAction = uri.Host;
-            string[] incomingParameters = uri.AbsolutePath.Substring(1, uri.AbsolutePath.Length - 1).Split('/');
 
             switch (incomingAction)
             {
                 case "togglelayer":
-                    var dataToggleLayer = new SpeckleLayerData() { StreamId = incomingStreamId, Id = Guid.Parse(incomingParameters[0]), Visible = bool.Parse(incomingParameters[1]) };
+                    var dataToggleLayer = new SpeckleLayerData() { StreamId = incomingParameters[0], Id = Guid.Parse(incomingParameters[1]), Visible = bool.Parse(incomingParameters[2]) };
                     layerVisibilityUpdate(dataToggleLayer);
                     break;
 
                 case "layercolorupdate":
-                    var dataLayerColorUpdate = new SpeckleLayerData() { StreamId = incomingStreamId, Id = Guid.Parse(incomingParameters[0]), Color = new SpeckleColor() { Hex = incomingParameters[1] }, Opacity = float.Parse(incomingParameters[2]) };
+                    var dataLayerColorUpdate = new SpeckleLayerData() { StreamId = incomingParameters[0], Id = Guid.Parse(incomingParameters[1]), Color = new SpeckleColor() { Hex = incomingParameters[2] }, Opacity = float.Parse(incomingParameters[3]) };
                     layerColorUpdate(dataLayerColorUpdate);
                     break;
 
                 case "liveupdate":
-                    liveUpdate(incomingStreamId);
+                    liveUpdate(incomingParameters[0]);
                     break;
 
                 case "metadataupdate":
-                    metadataUpdate(incomingStreamId);
+                    metadataUpdate(incomingParameters[0]);
                     break;
 
                 case "receiverready":
-                    receiverReady(incomingStreamId, incomingParameters[0]);
+                    receiverReady(incomingParameters);
                     break;
 
                 default:
@@ -111,12 +111,12 @@ namespace SpeckleRhino
             
         }
 
-        public void receiverReady(string streamId, string name)
+        public void receiverReady(string[] args)
         {
-            if (!_viewModel.Model.Receivers.Any(R => R.StreamId == streamId))
+            if (!_viewModel.Model.Receivers.Any(R => R.StreamId == args[0]))
             {
-                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(streamId, name));
-                _viewModel.Model.Receivers.First(R => R.StreamId == streamId).GetLiveUpdate();
+                _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(args[0], args[3], args[1], args[2]));
+                _viewModel.Model.Receivers.First(R => R.StreamId == args[0]).GetLiveUpdate();
             }
    
         }

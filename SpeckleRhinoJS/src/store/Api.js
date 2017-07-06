@@ -26,22 +26,27 @@ let SpkApi = {
         // return typeof speckleRhinoPipeline != 'undefined' ? cb( JSON.parse( speckleRhinoPipeline.getReceivers() ) ) : cb( _receivers )
     },
     toggleLayer(args) {
-        window.location.replace(args.streamId + '://' + 'togglelayer' + '/' + args.guid + '/' + args.visible)
+        var encodedArgs = window.btoa(args.streamId + '/' + args.guid + '/' + args.visible)
+        window.location.replace('speckle' + '://' + 'togglelayer' + '/' + encodedArgs)
     },
     layerColorUpdate(args) {
-        window.location.replace(args.streamId + '://' + 'layerColorUpdate' + '/' + args.guid + '/' + args.color + '/' + args.opacity);
+        var encodedArgs = window.btoa(args.streamId + '/' + args.guid + '/' + args.color + '/' + args.opacity)
+        window.location.replace('speckle' + '://' + 'layercolorupdate' + '/' + encodedArgs)
     },
     receiverReady(args)
     {
-        window.location.replace(args.streamId + '://' + 'receiverReady' + '/' + args.name);
+        var encodedArgs = window.btoa(args.streamId + '/' + args.apiUrl + '/' + args.token + '/' + args.name)
+        window.location.replace('speckle' + '://' + 'receiverready' + '/' + encodedArgs);
     },
     liveUpdate(args)
     {
-        window.location.replace(args.streamId + '://' + 'liveUpdate');
+        var encodedArgs = window.btoa(args.streamId)
+        window.location.replace('speckle' + '://' + 'liveupdate' + '/' + encodedArgs)
     },
     metadataUpdate(args)
     {
-        window.location.replace(args.streamId + '://' + 'metadataUpdate');
+        var encodedArgs = window.btoa(args.streamId)
+        window.location.replace('speckle' + '://' + 'metadataupdate' + '/' + encodedArgs)
     }
 }
 

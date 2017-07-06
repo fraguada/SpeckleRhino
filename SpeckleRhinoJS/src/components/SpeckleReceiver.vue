@@ -98,9 +98,9 @@ export default {
       this.mySpkReceiver.getObjects( ( objs ) => {
 
          // if (typeof speckleRhinoPipeline != 'undefined')
-         //     speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(this.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
-
-          SpkApi.receiverReady({ streamId: this.spkreceiver.streamId, name: name});
+          //     speckleRhinoPipeline.liveUpdate(this.spkreceiver.streamId, name, JSON.stringify(objs), JSON.stringify(this.spkreceiver.objectProperties), JSON.stringify(layers), JSON.stringify(this.spkreceiver.layerMaterials))
+          var url = new URL(this.spkreceiver.serverUrl)
+          SpkApi.receiverReady({ apiUrl: url.hostname, token: this.spkreceiver.token, streamId: this.spkreceiver.streamId, name: name })
       })
     },
     liveUpdate( name, layers, objects, objectProperties ) {
