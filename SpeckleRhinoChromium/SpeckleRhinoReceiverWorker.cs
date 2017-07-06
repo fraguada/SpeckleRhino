@@ -66,7 +66,7 @@ namespace SpeckleRhino
 
         public List<SpeckleCommon.SpeckleLayer> SpeckleLayers { get; private set; }
 
-        public List<object> SpeckleObjects { get; private set; }
+        public List<dynamic> SpeckleObjects { get; private set; }
 
         /// <summary>
         /// 
@@ -139,7 +139,7 @@ namespace SpeckleRhino
             Geometry = new List<GeometryBase>();
             Ids = new List<Guid>();
             SpeckleLayers = new List<SpeckleCommon.SpeckleLayer>();
-            SpeckleObjects = new List<object>();
+            SpeckleObjects = new List<dynamic>();
 
             Receiver = new SpeckleReceiver("https://" + ApiUrl + "/api/v1", Token, StreamId, Converter);
             
@@ -150,69 +150,7 @@ namespace SpeckleRhino
 
         #region Methods
 
-        void registermyReceiverEvents()
-        {
-            if (Receiver == null) return;
-
-            Receiver.OnDataMessage += OnDataMessage;
-
-            Receiver.OnError += OnError;
-
-            Receiver.OnReady += OnReady;
-
-            Receiver.OnMetadata += OnMetadata;
-
-            Receiver.OnData += OnData;
-
-            Receiver.OnHistory += OnHistory;
-
-            Receiver.OnMessage += OnVolatileMessage;
-
-            Receiver.OnBroadcast += OnBroadcast;
-        }
-
-        private void OnBroadcast(object source, SpeckleEventArgs e)
-        {
-            Debug.WriteLine("Receiver: OnBroadcast", "SpeckleRhino");
-        }
-
-        private void OnVolatileMessage(object source, SpeckleEventArgs e)
-        {
-            Debug.WriteLine("Receiver: OnVolatileMessage", "SpeckleRhino");
-        }
-
-        private void OnHistory(object source, SpeckleEventArgs e)
-        {
-            Debug.WriteLine("Receiver: OnHistory", "SpeckleRhino");
-        }
-
-        private void OnData(object source, SpeckleEventArgs e)
-        {
-            Debug.WriteLine("Receiver: OnData", "SpeckleRhino");
-        }
-
-        private void OnMetadata(object source, SpeckleEventArgs e)
-        {
-            Debug.WriteLine("Receiver: OnMetadataMessage", "SpeckleRhino");
-        }
-
-        private void OnReady(object source, SpeckleEventArgs e)
-        {
-            Debug.WriteLine("Receiver: OnReady", "SpeckleRhino");
-
-            SpeckleLayers = e.Data.layers;
-            SpeckleObjects = e.Data.objects;
-        }
-
-        private void OnError(object source, SpeckleEventArgs e)
-        {
-            Debug.WriteLine("Receiver: OnError " + e.EventInfo, "SpeckleRhino");
-        }
-
-        private void OnDataMessage(object source, SpeckleEventArgs e)
-        {
-            Debug.WriteLine("Receiver: OnDataMessage", "SpeckleRhino");
-        }
+        
 
         public bool Equals(SpeckleRhinoReceiverWorker other)
         {
@@ -224,6 +162,8 @@ namespace SpeckleRhino
         /// </summary>
         /// <param name="serializedLayers">The layer data coming from the stream.</param>
         /// <param name="serializedLayerMaterials">The layer material data coming from the stream.</param>
+        /// 
+        [Obsolete]
         public void CreateLayers (string serializedLayers, string serializedLayerMaterials)
         {
             LayerIds = new List<int>();
@@ -276,6 +216,152 @@ namespace SpeckleRhino
         /// <summary>
         /// 
         /// </summary>
+        public void ProcessLayers()
+        {
+            LayerIds = new List<int>();
+            LayerColors = new List<Color>();
+            VisibleList = new List<bool>();
+
+            ParentLayerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + this.StreamId + "]", true);
+
+            if (ParentLayerId == -1)
+            {
+                var layer = new Layer() { Name = this.Name + "_[" + this.StreamId + "]" };
+                ParentLayerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
+            }
+            else
+            {
+                //delete existing sublayers and their objects
+                foreach (var layer in RhinoDoc.ActiveDoc.Layers[ParentLayerId].GetChildren())
+                    RhinoDoc.ActiveDoc.Layers.Delete(layer.LayerIndex, true);
+            }
+
+            foreach (var speckleLayer in SpeckleLayers)
+            {
+                var layerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + this.StreamId + "]" + "::" + speckleLayer.name, true);
+                //var layerMaterial = layerMaterialsList.Find(lm => lm.Id == speckleLayer.Id);
+                if (layerId == -1)
+                {
+                    var layer = new Layer()
+                    {
+                        Name = speckleLayer.name,
+                        Id = Guid.Parse(speckleLayer.guid),
+                        ParentLayerId = RhinoDoc.ActiveDoc.Layers[ParentLayerId].Id,
+                        //Color = layerMaterial.Color.ToColor()
+                        Color = Color.Black,
+                        //IsVisible = layerMaterial.Visible
+                        IsVisible = true
+                    };
+                    layerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
+                }
+
+                for (int i = speckleLayer.startIndex; i < speckleLayer.startIndex + speckleLayer.objectCount; i++)
+                {
+                    LayerIds.Add(layerId);
+                    //LayerColors.Add(layerMaterial.Color.ToColor());
+                    LayerColors.Add(Color.Black);
+                    //VisibleList.Add(layerMaterial.Visible);
+                    VisibleList.Add(true);
+                }
+            }
+
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ProcessObjects()
+        {
+            GhRhConveter converter = new GhRhConveter();
+
+            Geometry.Clear();
+            if (Ids != null)
+            {
+                RhinoDoc.ActiveDoc.Objects.Delete(Ids, true);
+                Ids.Clear();
+            }
+
+            foreach (var obj in SpeckleObjects)
+            {
+                var type = obj.GetType();
+
+                switch (type.Name)
+                {
+                    case "Mesh":
+                    case "Brep":
+                    case "Curve":
+
+                        //Geometry.Add(converter.encodeObject(obj));
+                        Geometry.Add(obj);
+
+                        break;
+
+                    case "Point":
+
+                        //Geometry.Add(new Rhino.Geometry.Point(converter.encodeObject(obj)));
+                        Geometry.Add(new Rhino.Geometry.Point(obj));
+
+                        break;
+
+                    case "Polyline":
+
+                        //Polyline polyline = converter.encodeObject(obj);
+                        //Geometry.Add(polyline.ToNurbsCurve());
+                        Geometry.Add(obj.ToNurbsCurve());
+
+                        break;
+                    case "Circle":
+
+                        //Circle circle = converter.encodeObject(obj);
+                        //Geometry.Add(circle.ToNurbsCurve());
+                        Geometry.Add(obj.ToNurbsCurve());
+
+                        break;
+
+                    case "Rectangle":
+
+                        //Rectangle3d rectangle = converter.encodeObject(obj);
+                        //Geometry.Add(rectangle.ToNurbsCurve());
+                        Geometry.Add(obj.ToNurbsCurve());
+
+                        break;
+
+                    case "Line":
+
+                        //Line line = converter.encodeObject(obj);
+                        //Geometry.Add(line.ToNurbsCurve());
+                        Geometry.Add(obj.ToNurbsCurve());
+
+                        break;
+
+                    case "Box":
+
+                        //Box box = converter.encodeObject(obj);
+                        //Geometry.Add(box.ToBrep());
+                        Geometry.Add(obj.ToBrep());
+
+                        break;
+
+                    default:
+
+                        RhinoApp.WriteLine("{0}", obj);
+
+                        break;
+                }
+
+
+            }
+
+            for (int i = 0; i < Geometry.Count; i++)
+                Ids.Add(RhinoDoc.ActiveDoc.Objects.Add(Geometry[i], new ObjectAttributes() { LayerIndex = LayerIds[i] }));
+
+            DisplayContents();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void GetMetadataUpdate()
         {
             Debug.WriteLine("TODO: GetMetadataUpdate!", "SpeckleRhino");
@@ -296,6 +382,7 @@ namespace SpeckleRhino
         /// <param name="serializedPropertiesList"></param>
         /// <param name="serializedLayersList"></param>
         /// <param name="serializedLayerMaterialsList"></param>
+        [Obsolete]
         public void Update(string serializedObjectList, string serializedPropertiesList, string serializedLayersList, string serializedLayerMaterialsList)
         {
             CreateLayers(serializedLayersList, serializedLayerMaterialsList);
@@ -398,11 +485,12 @@ namespace SpeckleRhino
         {
 
             //Debug.WriteLine("SpeckleRhino: received LayerVis update.  Vis: {0}", deserializedLayerData.Visible);
-            if (SpeckleRhinoLayers == null) return;
+            if (SpeckleLayers == null || SpeckleLayers.Count == 0) return;
 
-            SpeckleLayer updatedLayer = SpeckleRhinoLayers.Find(sl => sl.Id == deserializedLayerData.Id);
+            //SpeckleLayer updatedLayer = SpeckleRhinoLayers.Find(sl => sl.Id == deserializedLayerData.Id);
+            SpeckleCommon.SpeckleLayer updatedLayer = SpeckleLayers.Find(sl => Guid.Parse(sl.guid) == deserializedLayerData.Id);
 
-            for (int i = updatedLayer.StartIndex; i < updatedLayer.StartIndex + updatedLayer.ObjectCount; i++)
+            for (int i = updatedLayer.startIndex; i < updatedLayer.startIndex + updatedLayer.objectCount; i++)
             {
                 VisibleList[i] = deserializedLayerData.Visible;
             }
@@ -418,17 +506,17 @@ namespace SpeckleRhino
         public void LayerColorUpdate(SpeckleLayerData deserializedLayerData)
         {
 
-            if (SpeckleRhinoLayers == null) return;
+            if (SpeckleLayers == null || SpeckleLayers.Count == 0) return;
 
-            SpeckleLayer updatedLayer = SpeckleRhinoLayers.Find(sl => sl.Id == deserializedLayerData.Id);
+            SpeckleCommon.SpeckleLayer updatedLayer = SpeckleLayers.Find(sl => Guid.Parse(sl.guid) == deserializedLayerData.Id);
 
-            var layerIndex =  Rhino.RhinoDoc.ActiveDoc.Layers.Find(updatedLayer.Id,true);
+            var layerIndex =  Rhino.RhinoDoc.ActiveDoc.Layers.Find(updatedLayer.guid,true);
 
             var layer = Rhino.RhinoDoc.ActiveDoc.Layers[layerIndex];
             layer.Color = deserializedLayerData.Color.ToColor();
             layer.CommitChanges();
 
-            for (int i = updatedLayer.StartIndex; i < updatedLayer.StartIndex + updatedLayer.ObjectCount; i++)
+            for (int i = updatedLayer.startIndex; i < updatedLayer.startIndex + updatedLayer.objectCount; i++)
             {
                 LayerColors[i] = deserializedLayerData.Color.ToColor();
 
@@ -442,13 +530,13 @@ namespace SpeckleRhino
         /// </summary>
         public void DisplayContents()
         {
-            Debug.WriteLine("Geometry: {0}, Colors: {1}, Visible: {2}",Geometry.Count, LayerColors.Count, VisibleList.Count);
+            //Debug.WriteLine("Geometry: {0}, Colors: {1}, Visible: {2}",Geometry.Count, LayerColors.Count, VisibleList.Count);
 
             if (Display != null)
             {
 
                 Display.Geometry = Geometry;
-                Display.Colors = LayerColors;
+                //Display.Colors = LayerColors;
                 Display.VisibleList = VisibleList;
 
             }
@@ -474,6 +562,74 @@ namespace SpeckleRhino
         #region Events / Event Handlers
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        void registermyReceiverEvents()
+        {
+            if (Receiver == null) return;
+
+            Receiver.OnDataMessage += OnDataMessage;
+
+            Receiver.OnError += OnError;
+
+            Receiver.OnReady += OnReady;
+
+            Receiver.OnMetadata += OnMetadata;
+
+            Receiver.OnData += OnData;
+
+            Receiver.OnHistory += OnHistory;
+
+            Receiver.OnMessage += OnVolatileMessage;
+
+            Receiver.OnBroadcast += OnBroadcast;
+        }
+
+        private void OnBroadcast(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnBroadcast", "SpeckleRhino");
+        }
+
+        private void OnVolatileMessage(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnVolatileMessage", "SpeckleRhino");
+        }
+
+        private void OnHistory(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnHistory", "SpeckleRhino");
+        }
+
+        private void OnData(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnData", "SpeckleRhino");
+        }
+
+        private void OnMetadata(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnMetadataMessage", "SpeckleRhino");
+        }
+
+        private void OnReady(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnReady", "SpeckleRhino");
+
+            SpeckleLayers = e.Data.layers;
+            SpeckleObjects = e.Data.objects;
+            //var layerMats = e.Data.layerMaterials;
+
+            ProcessLayers();
+            ProcessObjects();
+        }
+
+        private void OnError(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnError " + e.EventInfo, "SpeckleRhino");
+        }
+
+        private void OnDataMessage(object source, SpeckleEventArgs e)
+        {
+            Debug.WriteLine("Receiver: OnDataMessage", "SpeckleRhino");
+        }
 
         #endregion Events / Event Handlers
 

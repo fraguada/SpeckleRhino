@@ -19,6 +19,7 @@ namespace SpeckleRhino
 
         public System.Drawing.Color ToColor()
         {
+            if (!Hex.Contains("#")) Hex = "#" + Hex;
             System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(Hex);
             
             return System.Drawing.Color.FromArgb(color.R, color.G, color.B);

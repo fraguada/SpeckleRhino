@@ -114,11 +114,7 @@ namespace SpeckleRhino
         public void receiverReady(string[] args)
         {
             if (!_viewModel.Model.Receivers.Any(R => R.StreamId == args[0]))
-            {
                 _viewModel.Model.Receivers.Add(new SpeckleRhinoReceiverWorker(args[0], args[3], args[1], args[2]));
-                _viewModel.Model.Receivers.First(R => R.StreamId == args[0]).GetLiveUpdate();
-            }
-   
         }
 
         public void liveUpdate(string streamId)

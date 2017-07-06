@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using Rhino.Geometry;
 
 namespace SpeckleRhino
 {
@@ -62,6 +63,7 @@ namespace SpeckleRhino
                     {
                         case Rhino.DocObjects.ObjectType.Point:
                             if (VisibleList[cnt])
+                                //e.Display.DrawPoint((obj as Rhino.Geometry.Point).Location, Colors[cnt]);
                                 e.Display.DrawPoint((obj as Rhino.Geometry.Point).Location, Colors[cnt]);
                             break;
                         case Rhino.DocObjects.ObjectType.Curve:
