@@ -62,7 +62,11 @@ namespace SpeckleRhino
         /// <summary>
         /// 
         /// </summary>
-        public List<SpeckleLayer> SpeckleLayers { get; private set; }
+        public List<SpeckleLayer> SpeckleRhinoLayers { get; private set; }
+
+        public List<SpeckleCommon.SpeckleLayer> SpeckleLayers { get; private set; }
+
+        public List<object> SpeckleObjects { get; private set; }
 
         /// <summary>
         /// 
@@ -132,6 +136,10 @@ namespace SpeckleRhino
             ApiUrl = apiUrl;
             Token = token;
             Converter = new GhRhConveter();
+            Geometry = new List<GeometryBase>();
+            Ids = new List<Guid>();
+            SpeckleLayers = new List<SpeckleCommon.SpeckleLayer>();
+            SpeckleObjects = new List<object>();
 
             Receiver = new SpeckleReceiver("https://" + ApiUrl + "/api/v1", Token, StreamId, Converter);
             
@@ -191,6 +199,9 @@ namespace SpeckleRhino
         private void OnReady(object source, SpeckleEventArgs e)
         {
             Debug.WriteLine("Receiver: OnReady", "SpeckleRhino");
+
+            SpeckleLayers = e.Data.layers;
+            SpeckleObjects = e.Data.objects;
         }
 
         private void OnError(object source, SpeckleEventArgs e)
@@ -219,7 +230,7 @@ namespace SpeckleRhino
             LayerColors = new List<Color>();
             VisibleList = new List<bool>();
 
-            SpeckleLayers = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayers);
+            SpeckleRhinoLayers = JsonConvert.DeserializeObject<List<SpeckleLayer>>(serializedLayers);
             var layerMaterialsList = JsonConvert.DeserializeObject<List<SpeckleLayerMaterial>>(serializedLayerMaterials);
 
             ParentLayerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + this.StreamId + "]", true);
@@ -236,7 +247,7 @@ namespace SpeckleRhino
                     RhinoDoc.ActiveDoc.Layers.Delete(layer.LayerIndex, true);
             }
 
-            foreach(var speckleLayer in SpeckleLayers)
+            foreach(var speckleLayer in SpeckleRhinoLayers)
             {
                 var layerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + this.StreamId + "]" + "::" + speckleLayer.Name, true);
                 var layerMaterial = layerMaterialsList.Find(lm => lm.Id == speckleLayer.Id);
@@ -387,9 +398,9 @@ namespace SpeckleRhino
         {
 
             //Debug.WriteLine("SpeckleRhino: received LayerVis update.  Vis: {0}", deserializedLayerData.Visible);
-            if (SpeckleLayers == null) return;
+            if (SpeckleRhinoLayers == null) return;
 
-            SpeckleLayer updatedLayer = SpeckleLayers.Find(sl => sl.Id == deserializedLayerData.Id);
+            SpeckleLayer updatedLayer = SpeckleRhinoLayers.Find(sl => sl.Id == deserializedLayerData.Id);
 
             for (int i = updatedLayer.StartIndex; i < updatedLayer.StartIndex + updatedLayer.ObjectCount; i++)
             {
@@ -407,9 +418,9 @@ namespace SpeckleRhino
         public void LayerColorUpdate(SpeckleLayerData deserializedLayerData)
         {
 
-            if (SpeckleLayers == null) return;
+            if (SpeckleRhinoLayers == null) return;
 
-            SpeckleLayer updatedLayer = SpeckleLayers.Find(sl => sl.Id == deserializedLayerData.Id);
+            SpeckleLayer updatedLayer = SpeckleRhinoLayers.Find(sl => sl.Id == deserializedLayerData.Id);
 
             var layerIndex =  Rhino.RhinoDoc.ActiveDoc.Layers.Find(updatedLayer.Id,true);
 
