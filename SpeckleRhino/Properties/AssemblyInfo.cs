@@ -17,11 +17,11 @@ using Rhino.PlugIns;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SpeckleRhinoChromium")] // Plug-In title is extracted from this
-[assembly: AssemblyDescription("Speckle Chromium Panel for Rhinoceros 5")]
+[assembly: AssemblyTitle("SpeckleRhino")] // Plug-In title is extracted from this
+[assembly: AssemblyDescription("Speckle client for Rhinoceros 5")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Robert McNeel & Associates")]
-[assembly: AssemblyProduct("SpeckleRhinoChromium")]
+[assembly: AssemblyProduct("SpeckleRhino")]
 [assembly: AssemblyCopyright("Copyright © 2017, Robert McNeel & Associates")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

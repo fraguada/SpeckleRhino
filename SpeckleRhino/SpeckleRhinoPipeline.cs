@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
-using Rhino;
-using SpeckleGhRhConverter;
 using System.Windows.Forms;
 
 namespace SpeckleRhino
@@ -51,7 +49,16 @@ namespace SpeckleRhino
             Debug.WriteLine("Uri: " + uri.ToString(), "SpeckleRhino");
             Debug.WriteLine("Action: " + uri.Host, "SpeckleRhino");
 
-            var decodedParams = Convert.FromBase64String(uri.AbsolutePath.Substring(1, uri.AbsolutePath.Length - 1));
+            byte[] decodedParams;
+            try
+            {
+                decodedParams = Convert.FromBase64String(uri.AbsolutePath.Substring(1, uri.AbsolutePath.Length - 1));
+            } catch (Exception e)
+            {
+                Debug.WriteLine("String isn't base64.","Speckle Rhino");
+                return;
+            }
+
             string decodedString = Encoding.UTF8.GetString(decodedParams);
             string[] incomingParameters = decodedString.Split('/');
 
