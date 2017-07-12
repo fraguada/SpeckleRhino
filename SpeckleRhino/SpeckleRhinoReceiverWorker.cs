@@ -10,6 +10,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SpeckleRhino
 {
@@ -65,6 +69,8 @@ namespace SpeckleRhino
         public List<SpeckleLayer> SpeckleRhinoLayers { get; private set; }
 
         public List<SpeckleCommon.SpeckleLayer> SpeckleLayers { get; private set; }
+
+        public List<SpeckleLayerMaterial> SpeckleLayerMaterials { get; private set; }
 
         public List<dynamic> SpeckleObjects { get; private set; }
 
@@ -142,7 +148,7 @@ namespace SpeckleRhino
             SpeckleObjects = new List<dynamic>();
 
             Receiver = new SpeckleReceiver("https://" + ApiUrl + "/api/v1", Token, StreamId, Converter);
-            
+
             registermyReceiverEvents();
         }
 
@@ -150,7 +156,7 @@ namespace SpeckleRhino
 
         #region Methods
 
-        
+
 
         public bool Equals(SpeckleRhinoReceiverWorker other)
         {
@@ -164,7 +170,7 @@ namespace SpeckleRhino
         /// <param name="serializedLayerMaterials">The layer material data coming from the stream.</param>
         /// 
         [Obsolete]
-        public void CreateLayers (string serializedLayers, string serializedLayerMaterials)
+        public void CreateLayers(string serializedLayers, string serializedLayerMaterials)
         {
             LayerIds = new List<int>();
             LayerColors = new List<Color>();
@@ -187,19 +193,20 @@ namespace SpeckleRhino
                     RhinoDoc.ActiveDoc.Layers.Delete(layer.LayerIndex, true);
             }
 
-            foreach(var speckleLayer in SpeckleRhinoLayers)
+            foreach (var speckleLayer in SpeckleRhinoLayers)
             {
                 var layerId = RhinoDoc.ActiveDoc.Layers.FindByFullPath(this.Name + "_[" + this.StreamId + "]" + "::" + speckleLayer.Name, true);
                 var layerMaterial = layerMaterialsList.Find(lm => lm.Id == speckleLayer.Id);
                 if (layerId == -1)
                 {
                     var layer = new Layer()
-                    { Name = speckleLayer.Name,
+                    {
+                        Name = speckleLayer.Name,
                         Id = speckleLayer.Id,
                         ParentLayerId = RhinoDoc.ActiveDoc.Layers[ParentLayerId].Id,
                         Color = layerMaterial.Color.ToColor()
                         //IsVisible = layerMaterial.Visible
-                     };
+                    };
                     layerId = RhinoDoc.ActiveDoc.Layers.Add(layer);
                 }
 
@@ -372,7 +379,7 @@ namespace SpeckleRhino
         /// </summary>
         public void GetLiveUpdate()
         {
-            Debug.WriteLine("TODO: GetLiveUpdate!","SpeckleRhino");
+            Debug.WriteLine("TODO: GetLiveUpdate!", "SpeckleRhino");
         }
 
         /// <summary>
@@ -391,7 +398,7 @@ namespace SpeckleRhino
             if (SerializedObjects != serializedObjectList)
             {
                 SerializedObjects = serializedObjectList;
-                
+
                 var objectList = JsonConvert.DeserializeObject<List<dynamic>>(SerializedObjects);
                 //var propertiesList = JsonConvert.DeserializeObject<List<dynamic>>(serializedPropertiesList);
 
@@ -407,7 +414,7 @@ namespace SpeckleRhino
                 foreach (var obj in objectList)
                 {
                     string type = (string)obj.type;
-                    
+
                     switch (type)
                     {
                         case "Mesh":
@@ -415,47 +422,47 @@ namespace SpeckleRhino
                         case "Curve":
 
                             Geometry.Add(converter.encodeObject(obj));
-                            
+
                             break;
 
                         case "Point":
 
                             Geometry.Add(new Rhino.Geometry.Point(converter.encodeObject(obj)));
-                            
+
                             break;
 
                         case "Polyline":
 
                             Polyline polyline = converter.encodeObject(obj);
                             Geometry.Add(polyline.ToNurbsCurve());
-                            
+
                             break;
                         case "Circle":
 
                             Circle circle = converter.encodeObject(obj);
                             Geometry.Add(circle.ToNurbsCurve());
-                            
+
                             break;
 
                         case "Rectangle":
 
                             Rectangle3d rectangle = converter.encodeObject(obj);
                             Geometry.Add(rectangle.ToNurbsCurve());
-                            
+
                             break;
 
                         case "Line":
 
                             Line line = converter.encodeObject(obj);
                             Geometry.Add(line.ToNurbsCurve());
-                            
+
                             break;
 
                         case "Box":
 
                             Box box = converter.encodeObject(obj);
                             Geometry.Add(box.ToBrep());
-                            
+
                             break;
 
                         default:
@@ -469,12 +476,12 @@ namespace SpeckleRhino
                 }
 
                 for (int i = 0; i < Geometry.Count; i++)
-                    Ids.Add(RhinoDoc.ActiveDoc.Objects.Add(Geometry[i], new ObjectAttributes() { LayerIndex = LayerIds[i] } ));
+                    Ids.Add(RhinoDoc.ActiveDoc.Objects.Add(Geometry[i], new ObjectAttributes() { LayerIndex = LayerIds[i] }));
 
                 DisplayContents();
 
             }
-           
+
         }
 
         /// <summary>
@@ -510,7 +517,7 @@ namespace SpeckleRhino
 
             SpeckleCommon.SpeckleLayer updatedLayer = SpeckleLayers.Find(sl => Guid.Parse(sl.guid) == deserializedLayerData.Id);
 
-            var layerIndex =  Rhino.RhinoDoc.ActiveDoc.Layers.Find(updatedLayer.guid,true);
+            var layerIndex = Rhino.RhinoDoc.ActiveDoc.Layers.Find(updatedLayer.guid, true);
 
             var layer = Rhino.RhinoDoc.ActiveDoc.Layers[layerIndex];
             layer.Color = deserializedLayerData.Color.ToColor();
@@ -555,6 +562,35 @@ namespace SpeckleRhino
         {
             if (Display != null)
                 Display.Enabled = false;
+        }
+
+        private async Task<dynamic> RequestLayerMaterials()
+        {
+
+            string url = "https://server.speckle.works/api/v1/streams/" + StreamId;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(url));
+
+            request.Method = "GET";
+
+            using (WebResponse response = await request.GetResponseAsync())
+            {
+
+                StreamReader reader = new StreamReader(response.GetResponseStream());
+                return reader.ReadToEnd();
+
+            }
+        }
+
+        async void GetLayerMaterials()
+        {
+            SpeckleLayerMaterials = new List<SpeckleLayerMaterial>();
+            //dynamic mats = await RequestLayerMaterials();
+            dynamic data = JsonConvert.DeserializeObject<dynamic>(await RequestLayerMaterials());
+
+           // SpeckleLayerMaterials = new List<SpeckleLayerMaterial>(JsonConvert.DeserializeObject<dynamic>(mats).data.layerMaterials);
+            //RequestLayerMaterials().Wait();
+            
         }
 
         #endregion Methods
@@ -615,7 +651,8 @@ namespace SpeckleRhino
 
             SpeckleLayers = e.Data.layers;
             SpeckleObjects = e.Data.objects;
-            //var layerMats = e.Data.layerMaterials;
+
+           // GetLayerMaterials();
 
             ProcessLayers();
             ProcessObjects();
