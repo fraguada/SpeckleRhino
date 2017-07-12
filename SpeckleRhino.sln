@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeckleRhinoPlugIn", "SpeckleRhinoChromium\SpeckleRhinoPlugIn.csproj", "{121C58CE-A403-472F-8B6E-F26DB8D504BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeckleRhinoPlugIn", "SpeckleRhino\SpeckleRhinoPlugIn.csproj", "{121C58CE-A403-472F-8B6E-F26DB8D504BC}"
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "SpeckleRhinoJS", "SpeckleRhinoJS\SpeckleRhinoJS.njsproj", "{55A2290E-C395-4325-833C-F388E858786E}"
 EndProject

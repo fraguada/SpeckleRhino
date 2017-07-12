@@ -4,3 +4,8 @@ packages/
 SpeckleRhinoChromium/bin/
 SpeckleRhinoChromium/obj/
 SpeckleRhinoJS/node_modules/
+SpeckleRhinoJS/bin/
+SpeckleRhinoJS/obj/Release/CoreCompileInputs.cache
+SpeckleRhinoJS/obj/
+SpeckleRhino/bin/
+SpeckleRhino/obj/
